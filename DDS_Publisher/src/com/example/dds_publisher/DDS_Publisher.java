@@ -46,34 +46,17 @@ public class DDS_Publisher extends Activity {
 //	public static DynamicTypeDataReader[]  readers_tablet      = { null, null, null };
     public static DynamicTypeDataWriter[]  writers_tablet      = { null, null, null };
   
-//    public static DomainParticipantQos     dp_qos_tablet       = new DomainParticipantQos();
+    public static DomainParticipantQos     dp_qos_tablet       = new DomainParticipantQos();
     public static Publisher                pub_tablet          = null;
-//    public static PublisherQos             pub_qos_tablet      = null;
-//    public static PublisherListener 	   pub_listener_tablet = null;
+    public static PublisherQos             pub_qos_tablet      = null;
+    public static PublisherListener 	   pub_listener_tablet = null;
 //    public static DataWriterListener       dw_listener_tablet  = null;
     public static Topic	                   topics              = null;
     public static MulticastLock            mcastLock = null;
     public static Vector<Writer> publisher = null;
-    
+    public StringDynamicType testing = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
- 
-    	/*
-    	  LongDynamicType XVel_DDS = new LongDynamicType(); 
-	      LongDynamicType YVel_DDS = new LongDynamicType();
-	      LongDynamicType CompassDir_DDS = new LongDynamicType();
-	      LongDynamicType GPS_LN_DDS = new LongDynamicType();
-	      LongDynamicType GPS_LT_DDS = new LongDynamicType();
-    	*/
-    	//  coredx DDS;
-    	
-    /*
-	      XVel_DDS.set_long(666);
-	      YVel_DDS.set_long(666);
-	      CompassDir_DDS.set_long(666);
-	      GPS_LN_DDS.set_long(666);
-	      GPS_LT_DDS.set_long(666);
-	  */    
 	      
 	      
 	      WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
@@ -105,12 +88,10 @@ public class DDS_Publisher extends Activity {
         Log.i("Tablet", "...License seems to be good");
         
 	    //Tablet variables
-		Log.i("Tablet", "Creating Publication");
 		Log.i("Tablet","STARTING -------------------------");
-	    //System.out.println("STARTING -------------------------");
 	    DomainParticipantFactory dpf = DomainParticipantFactory.get_instance();
 	    dpf.set_license(license);
-//	    dpf.get_default_participant_qos(dp_qos_tablet);
+	   // dpf.get_default_participant_qos(dp_qos_tablet);
 	   
 	    
 	   
@@ -119,7 +100,7 @@ public class DDS_Publisher extends Activity {
 	    System.out.println("CREATE PARTICIPANT ---------------");
 	    
 	  //Tablet variable - create DDS entities for reading tablet data
-    //   DomainParticipant dp = dpf.create_participant(0, dp_qos_tablet, null, 0);
+      // DomainParticipant dp = dpf.create_participant(0, dp_qos_tablet, null, 0);
 	    DomainParticipant dp = null;
 	    dp = dpf.create_participant(0, null, null, 0);
                 
@@ -135,10 +116,8 @@ public class DDS_Publisher extends Activity {
       	  .show();
         }
         
-        PublisherQos pub_qos_tablet = new PublisherQos();
-    //    PublisherQos pub_qos_tablet = null;
-        PublisherListener  pub_listener = null;
-        pub_tablet = dp.create_publisher(pub_qos_tablet, pub_listener, 0);
+
+        pub_tablet = dp.create_publisher(pub_qos_tablet, pub_listener_tablet, 0);
     	Log.i("Tablet","creating publisher");
     	
     	
@@ -154,13 +133,13 @@ public class DDS_Publisher extends Activity {
 	  
 	    
         TypeSupport ts = StructDynamicType.create_typesupport(tablet_type);
-	   // TypeSupport ts = DynamicType.create_typesupport(tablet_type);
+	   
     	//ts.register_type(dp, "TabletType");
     	System.out.println("TS Declared -----------------");
         
     	//ReturnCode_t retval = ts.register_type(dp,"TabletType");
     	
-    	ReturnCode_t retval = ts.register_type(dp, null);
+    	ReturnCode_t retval = ts.register_type(dp, ts.get_type_name());
 	    
     	System.out.println("CREATE TOPIC ---------------------");
 	   
@@ -184,7 +163,8 @@ public class DDS_Publisher extends Activity {
 	    		                             dw_qos_tablet,
 	    		                             dw_listener, 
 	    		                             0);
-	  
+
+	
 		  
         if(dw == null)
         {
@@ -194,23 +174,18 @@ public class DDS_Publisher extends Activity {
         
 	    System.out.println("DATAWRITER CREATED ----------------");
 	    int i = 1;
-	 
+	    
 	    while ( true ) {
-	      
-	      
-	    	
-	      System.out.println("WRITE SAMPLE. ");
-          
-	 
-	   
-	     retval = dw.write(tablet_type, null);
-	      
+         
+         retval = dw.write(tablet_type, null);
+    
+	     System.out.println( "DDS_DataWriter_write() " + retval);
 	    if ( retval != ReturnCode_t.RETCODE_OK )
 		System.out.println( "   ====  DDS_DataWriter_write() error... ");
 
 	      try {
-		// Thread.currentThread();
-		Thread.sleep(1000);   // 1 second sleep
+	
+		Thread.currentThread().sleep(10000);   // 1 second sleep
 	      } catch (Exception e) {
 		e.printStackTrace();
 	      }
@@ -226,20 +201,21 @@ public class DDS_Publisher extends Activity {
     }
     
     
-    public static void newWriter(LongDynamicType XVel_DDS,
-    		LongDynamicType YVel_DDS,
-    		LongDynamicType CompassDir_DDS,
-    		LongDynamicType GPS_LN_DDS,
-    		LongDynamicType GPS_LT_DDS)
+    public static void newWriter()
     {
 
-
-     // for (int i = 0; i < 3; i++)
-     //  {
-     // 	if (topic.equals(topic_names[i]))
-     // 	  {
-
+    	LongDynamicType XVel_DDS = null;
+		LongDynamicType YVel_DDS = null;
+		LongDynamicType CompassDir_DDS = null;
+		LongDynamicType GPS_LN_DDS = null;
+		LongDynamicType GPS_LT_DDS = null;
     	
+		XVel_DDS.set_long(666);
+		YVel_DDS.set_long(666);
+		CompassDir_DDS.set_long(666);
+		GPS_LN_DDS.set_long(666);
+		GPS_LT_DDS.set_long(666);
+		
     	Writer w = new Writer(DDS_Publisher.writers_tablet, 
   			  XVel_DDS,
   			  YVel_DDS,
@@ -248,8 +224,6 @@ public class DDS_Publisher extends Activity {
   			  GPS_LT_DDS);
   	    
  	    synchronized (publisher) { publisher.add(w); }
-  	   // break;
-  	   //}
     }
 
     /** call to move and publish any local shapes  */
