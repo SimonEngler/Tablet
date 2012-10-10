@@ -36,6 +36,9 @@ import com.toc.coredx.DDS.TopicDescription;
 import com.toc.coredx.DDS.TypeSupport;
 import com.toc.coredx.DDS.coredx;
 import com.toc.coredx.DDS.coredxConstants;
+
+
+
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
@@ -48,10 +51,10 @@ import android.view.Menu;
 
 public class DDS_Subscriber extends Activity {
 
-
+	public static DynamicTypeDataReader[] string_dr = null;
 	public static DynamicTypeDataReader[]  readers_tablet      = { null, null, null };
     public static DynamicTypeDataWriter[]  writers_tablet      = { null, null, null };
-   
+    public static DynamicTypeDataWriter[]  readers = null;
     DataReaderQos dr_qos_tablet = new DataReaderQos();
 	DataWriterQos dw_qos_tablet = new DataWriterQos();
     public static DomainParticipantQos      dp_qos_tablet       = new DomainParticipantQos();
@@ -164,68 +167,87 @@ public class DDS_Subscriber extends Activity {
        @Override
   	public void on_data_available(DataReader dr)
        { 
-  	TopicDescription td = dr.get_topicdescription();
-   
-  	System.out.println(" @@@@@@@@@@@     DATA AVAILABLE          @@@@@@@@@@"); 
-  	System.out.println(" @@@@@@@@@@@        topic = " + td.get_name() + " (type: " + td.get_type_name() + ")");
-    
-  	DynamicTypeDataReader string_dr = (DynamicTypeDataReader)dr;  	
-  	DynamicTypeSeq     samples = new DynamicTypeSeq();
-  	StructDynamicType    tablet_data;
-  	SampleInfoSeq si      = new SampleInfoSeq();
-  	ReturnCode_t retval = null;
-  	/*
-  	retval  = string_dr.take(samples, si, 100, 
-  					       coredxConstants.DDS_ANY_SAMPLE_STATE, 
-  					       coredxConstants.DDS_ANY_VIEW_STATE, 
-  					       coredxConstants.DDS_ANY_INSTANCE_STATE);
-  	*/
-   
-   
-   retval = string_dr.read(samples, si, 100, coredxConstants.DDS_ANY_SAMPLE_STATE, 
-  			            coredxConstants.DDS_ANY_VIEW_STATE, coredxConstants.DDS_ANY_INSTANCE_STATE);
-   
-  	System.out.println(" @@@@@@@@@@@        DR.read() ===> " + retval);
+    	   System.out.println(" @@@@@@@@@@@     DATA AVAILABLE          @@@@@@@@@@"); 
+    	   
+  	       TopicDescription td = dr.get_topicdescription();	
+  	       System.out.println(" @@@@@@@@@@@        topic = " + td.get_name() + " (type: " + td.get_type_name() + ")");
+  	       DynamicTypeDataReader string_dr = (DynamicTypeDataReader)dr;
   	
+  	for(int i=0; i<1; i++)
+  	  		{
+  	  			//read
+  	  			DynamicTypeSeq samples = new DynamicTypeSeq();
+  	  			SampleInfoSeq si = new SampleInfoSeq();
+  	  		
+  	  			ReturnCode_t retval = string_dr.take(samples, si, 100, coredxConstants.DDS_ANY_SAMPLE_STATE, 
+			            coredxConstants.DDS_ANY_VIEW_STATE, coredxConstants.DDS_ANY_INSTANCE_STATE);
+  	  			
+  	  		    System.out.println(" @@@@@@@@@@@        DR.read() ===> " + retval);
+  	  		  
+  	  		    if (retval == ReturnCode_t.RETCODE_OK) {
+  	  		    
+  	  		    System.out.println("    State       : " + 
+   				    (si.value[i].instance_state == 
+   					coredxConstants.DDS_ALIVE_INSTANCE_STATE?"ALIVE":"NOT ALIVE") );
+   		    
+  	  		    System.out.println("    TimeStamp   : " + si.value[i].source_timestamp.sec + "." + 
+                                                                si.value[i].source_timestamp.nanosec);
+   		    
+  	  		    System.out.println("    Handle      : " + si.value[i].instance_handle.value);
+   		    
+  	  		    System.out.println("    WriterHandle: " + si.value[i].publication_handle.value);
+   		    
+  	  		    System.out.println("    SampleRank  : " + si.value[i].sample_rank);
+  	  		    System.out.println("data:  " + si.value[i].valid_data);
+  	  		    
+  	  		    if (si.value[i].valid_data)
+  	  		   {
+  	  		    System.out.println(" @@@@@@@@@@@ Valid Data");
+  	  		      //Declare variables to be read
+  	  			  
+  	  			  StructDynamicType data;
+  	  			  LongDynamicType XVel_DDS = null;
+  	  			  LongDynamicType YVel_DDS = null;
+  	  			  LongDynamicType CompassDir_DDS = null;
+  	  			  LongDynamicType GPS_LN_DDS = null;
+  	  			  LongDynamicType GPS_LT_DDS = null;
+  	  			  
+  	  			 //Loop through data set and extract values
+  	  			 int count = samples.value.length;
+  	  			System.out.println("data:  " + samples.value.length);
+  	           for (int j = 0;j < count; j++) {
+  	             if (si.value[j].sample_rank == 0) {
+  	            	
+  	            	data = (StructDynamicType)samples.value[j];
+  	            	
+  	            	System.out.println(" @@@@@@@@@@@5" + data.toString());
+  	            	XVel_DDS = (LongDynamicType)data.get_field(0);
+  	            	
+  	            	System.out.println(" @@@@@@@@@@@6");
+  	            	YVel_DDS = (LongDynamicType)data.get_field(1);
+  	            	CompassDir_DDS = (LongDynamicType)data.get_field(2);
+  	            	GPS_LT_DDS = (LongDynamicType)data.get_field(3);
+  	            	GPS_LN_DDS = (LongDynamicType)data.get_field(4);
+  	            	System.out.println(" @@@@@@@@@@@7");
+  	            	System.out.println(XVel_DDS.toString());
+  	            	int x = XVel_DDS.get_long();
+  	            	int y = YVel_DDS.get_long();
+  	            	
+  	            	System.out.println("data: " + x + " " + y);
+  	             }
+  	              		  
+  	  			  
+  	  		  }
+  	  		    }
+  	  		    
+  	  		string_dr.return_loan(samples, si);
+  	  		  }
+  	  	
 
-  	if (retval == ReturnCode_t.RETCODE_OK)
-  	  {
-  		
-  	    if (samples == null)
-  	      System.out.println(" @@@@@@@@@@@        samples.value = null");
-  	    else
-  	      {
-  		System.out.println(" @@@@@@@@@@@        samples.value.length= " + samples.value.length);
-  		
-  		for (int i = 0; i < 1; i++)
-  		  {
-  		
-  		
-  		    System.out.println("    State       : " + 
-  				       (si.value[i].instance_state == 
-  					coredxConstants.DDS_ALIVE_INSTANCE_STATE?"ALIVE":"NOT ALIVE") );
-  		    System.out.println("    TimeStamp   : " + si.value[i].source_timestamp.sec + "." + 
-                                                               si.value[i].source_timestamp.nanosec);
-  		    System.out.println("    Handle      : " + si.value[i].instance_handle.value);
-  		    System.out.println("    WriterHandle: " + si.value[i].publication_handle.value);
-  		    System.out.println("    SampleRank  : " + si.value[i].sample_rank);
-  		    if (si.value[i].valid_data)
-  		    //	System.out.println("data 0:" + samples.get_field(0).toString());
-  		    //	System.out.println("data 1:" + samples.get_field(1).toString());
-  		    //	System.out.println("data 2:" + samples.get_field(2).toString());
-  		    //	System.out.println("data 3:" + samples.get_field(3).toString());
-  		     System.out.println("       msg      : " + samples.value[i].toString());
-
-  		  }
-  	      }
-  	    string_dr.return_loan(samples, si);
-  	  }
-  	else
-  	  {
-  	  }
-  	System.out.println(" @@@@@@@@@@@                             @@@@@@@@@@" );
-  	System.out.println(" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); 
+  	  		}      
+  	  		
        };
+       
      };
 
 
@@ -312,17 +334,14 @@ public class DDS_Subscriber extends Activity {
      
      DynamicTypeDataReader dr = (DynamicTypeDataReader) sub.create_datareader(top, dr_qos, dr_listener, coredx.getDDS_ALL_STATUS());
     
-     // DynamicTypeDataReader   dr = (DynamicTypeDataReader) sub.create_datareader(top, 
-  	//							     dr_qos, 
-  	//							     dr_listener, 
-  	//							     coredx.getDDS_ALL_STATUS());
-
+   
      System.out.println("DATAREADER CREATED ----------------");
      
      while ( true ) {
+    	 
        try {
-  	//Thread.currentThread();
-  	Thread.currentThread().sleep(1000);   // 5 second sleep
+  
+  	Thread.currentThread().sleep(20000);   // 5 second sleep
        } catch (Exception e) {
   	e.printStackTrace();
        }
