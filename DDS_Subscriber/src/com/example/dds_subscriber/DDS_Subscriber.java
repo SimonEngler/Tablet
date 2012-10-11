@@ -199,7 +199,12 @@ public class DDS_Subscriber extends Activity {
    		    
   	  		    System.out.println("    SampleRank  : " + si.value[i].sample_rank);
   	  		    System.out.println("data:  " + si.value[i].valid_data);
-  	  		    
+  	  		   
+  	  		  System.out.println(" @@@@@@@@@@@        samples.value.length= " + samples.value.length);
+  	  		  
+  	  		 LongDynamicType mystring = (LongDynamicType)samples.value[i];
+  	  		   System.out.println("       msg      : " + mystring.get_long());
+  	  		   
   	  		    if (si.value[i].valid_data)
   	  		   {
   	  		    System.out.println(" @@@@@@@@@@@ Valid Data");
@@ -287,24 +292,27 @@ public class DDS_Subscriber extends Activity {
  	sub_tablet = dp.create_subscriber(sub_qos_tablet, null, 0);
      
      System.out.println("REGISTERING TYPE -----------------");
-      
+     LongDynamicType data = new LongDynamicType();
+     /*
      tablet_type = new StructDynamicType();
  	 tablet_type.set_num_fields(5);
- 	 StringDynamicType Label = new StringDynamicType();
- 	 Label.set_max_length(128);
- 	
+ 	 
+ 	 
+ 	 
  	 tablet_type.set_field(0, "XVel_DDS",new LongDynamicType(), false);
      tablet_type.set_field(1, "YVel_DDS", new LongDynamicType(), false);
      tablet_type.set_field(2, "CompassDir_DDS", new LongDynamicType(), false);
      tablet_type.set_field(3, "GPS_LN_DDS", new LongDynamicType(), false);
      tablet_type.set_field(4, "GPS_LT_DDS", new LongDynamicType(), false);
      tablet_type.set_field(5, "GPS_LT_DDS", new LongDynamicType(), false);
-     
+     */
 	 System.out.println("Declare TS -----------------");
 	  
 	    
 	    
-	TypeSupport ts = DynamicType.create_typesupport(tablet_type);
+	//TypeSupport ts = DynamicType.create_typesupport(tablet_type);
+	 TypeSupport ts = StringDynamicType.create_typesupport(data);
+	 
  	ReturnCode_t retval = ts.register_type(dp, ts.get_type_name());
  	
 
@@ -341,7 +349,7 @@ public class DDS_Subscriber extends Activity {
     	 
        try {
   
-  	Thread.currentThread().sleep(20000);   // 5 second sleep
+  	Thread.currentThread().sleep(10000);   // 5 second sleep
        } catch (Exception e) {
   	e.printStackTrace();
        }

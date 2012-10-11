@@ -114,7 +114,11 @@ public class DDS_Publisher extends Activity {
         Log.i("Tablet","creating publisher");
         
     	System.out.println("REGISTERING TYPE -----------------");
-	    
+    	StringDynamicType  data = new StringDynamicType();
+    	LongDynamicType XVel_DDS = new LongDynamicType();
+    	data.set_string("GOD DAMN THIS SUCKS");
+    	
+    	/*
 	    tablet_type = new StructDynamicType();
     	tablet_type.set_num_fields(5);
     	tablet_type.set_field(0, "XVel_DDS",new LongDynamicType(), false);
@@ -122,11 +126,12 @@ public class DDS_Publisher extends Activity {
         tablet_type.set_field(2, "CompassDir_DDS", new LongDynamicType(), false);
         tablet_type.set_field(3, "GPS_LN_DDS", new LongDynamicType(), false);
         tablet_type.set_field(4, "GPS_LT_DDS", new LongDynamicType(), false);
-	    
+	    */
         //Declare and register type support
         System.out.println("Declare TS -----------------");
         
-        TypeSupport ts = StructDynamicType.create_typesupport(tablet_type);
+        TypeSupport ts = LongDynamicType.create_typesupport(XVel_DDS);
+        //TypeSupport ts = StructDynamicType.create_typesupport(tablet_type);
        
         
         System.out.println("TS Declared -----------------");
@@ -171,8 +176,14 @@ public class DDS_Publisher extends Activity {
 	    
 	    int i = 1; 
 	    while ( true ) {
-	   
-        retval = dw.write(tablet_type, null); 
+	    	
+		      i++;
+	    	  data.set_string("Hello WORLD from Android!" + i);
+	    	  XVel_DDS.set_long(6666);
+	    	  
+		      retval = dw.write (XVel_DDS, null );
+		      
+       // retval = dw.write(tablet_type, null); 
 	    System.out.println( "DDS_DataWriter_write() " + retval);
 
 	    if ( retval != ReturnCode_t.RETCODE_OK )
