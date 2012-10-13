@@ -11,22 +11,15 @@ import com.toc.coredx.DDS.DataWriterQos;
 import com.toc.coredx.DDS.DomainParticipant;
 import com.toc.coredx.DDS.DomainParticipantFactory;
 import com.toc.coredx.DDS.DomainParticipantQos;
-import com.toc.coredx.DDS.DynamicType;
 import com.toc.coredx.DDS.DynamicTypeDataReader;
 import com.toc.coredx.DDS.DynamicTypeDataWriter;
-import com.toc.coredx.DDS.DynamicTypeSeq;
 import com.toc.coredx.DDS.LivelinessChangedStatus;
-import com.toc.coredx.DDS.LongDynamicType;
-import com.toc.coredx.DDS.Publisher;
-import com.toc.coredx.DDS.PublisherQos;
 import com.toc.coredx.DDS.RequestedDeadlineMissedStatus;
 import com.toc.coredx.DDS.RequestedIncompatibleQosStatus;
 import com.toc.coredx.DDS.ReturnCode_t;
-import com.toc.coredx.DDS.SampleInfo;
 import com.toc.coredx.DDS.SampleInfoSeq;
 import com.toc.coredx.DDS.SampleLostStatus;
 import com.toc.coredx.DDS.SampleRejectedStatus;
-import com.toc.coredx.DDS.StringDynamicType;
 import com.toc.coredx.DDS.StructDynamicType;
 import com.toc.coredx.DDS.Subscriber;
 import com.toc.coredx.DDS.SubscriberListener;
@@ -36,7 +29,6 @@ import com.toc.coredx.DDS.Topic;
 import com.toc.coredx.DDS.TopicDescription;
 import com.toc.coredx.DDS.TypeSupport;
 import com.toc.coredx.DDS.coredx;
-import com.toc.coredx.DDS.coredxConstants;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
@@ -67,7 +59,6 @@ public class DDS_Subscriber extends Activity {
     public static SubscriberQos             sub_qos_tablet      = null;
     public static MulticastLock             mcastLock = null;
 	public static StructDynamicType         tablet_type   = null;
-//	public static StructDynamicType         samples   = null;
 	
 	//Declare DDS Message variables
 	dataDDS dataMessage;
@@ -79,24 +70,14 @@ public class DDS_Subscriber extends Activity {
   	dataDDSSeq samples;
     SampleInfoSeq   samples_info;
 	
-	//FilterMsgPtrSeq       samples;
-//	DDS_SampleInfoSeq     samples_info;
-//	DDS_ReturnCode_t      retval;
-//	DDS_SampleStateMask   ss = DDS_ANY_SAMPLE_STATE;
-//	DDS_ViewStateMask     vs = DDS_ANY_VIEW_STATE;
-//	DDS_InstanceStateMask is = DDS_ANY_INSTANCE_STATE;
-	
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	
    	  WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
       mcastLock = wifi.createMulticastLock("Tablet");
       mcastLock.acquire();
-      
-      
-      
-	   // open CoreDX DDS license file:
+        
+	// open CoreDX DDS license file:
     BufferedReader br = null;
     String license = new String("<");
     try {
@@ -124,11 +105,7 @@ public class DDS_Subscriber extends Activity {
    	 Log.i("Tablet", "Creating Subscriber");
      class TestDataReaderListener implements DataReaderListener 
      {
-
-  	   //Is this variable right?
-  		 TypeSupport ts;
-  		
-  		 
+    	 
       @Override
   	public long get_nil_mask() { return 0; }
 
@@ -158,16 +135,8 @@ public class DDS_Subscriber extends Activity {
   	public void on_liveliness_changed(DataReader dr,
   					LivelinessChangedStatus status)
        {
-//  	TopicDescription   td = dr.get_topicdescription();
-//  	System.out.println(" @@@@@@@@@@@     LIVELINESS CHANGED      @@@@@@@@@@"); 
- // 	System.out.println(" @@@@@@@@@@@        topic   = " + td.get_name() + " (type: " + td.get_type_name() + ")");
-//  	System.out.println(" @@@@@@@@@@@        change  = " + status.get_alive_count_change());
-//  	System.out.println(" @@@@@@@@@@@        current = " + status.get_alive_count());
-// 	System.out.println(" @@@        participant = " + td.get_participant().toString());
- 
-//  	System.out.println(" @@@@@@@@@@@                             @@@@@@@@@@" );
-//  	System.out.println(" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); 
-  	
+      	TopicDescription   td = dr.get_topicdescription();
+    	System.out.println(" @@@@@@@@@@@     LIVELINESS CHANGED      @@@@@@@@@@"); 
        }
 
        @Override
@@ -252,10 +221,6 @@ public class DDS_Subscriber extends Activity {
     		 //null, /* default qos */
   				null, /* no listener */
   				0);
-
-     
-     //Tablet variable - create DDS entities for reading tablet data
-   //   dp = dpf.create_participant(0, dp_qos_tablet, null, 0);
      
      if(dp == null)
      {
@@ -273,24 +238,8 @@ public class DDS_Subscriber extends Activity {
  	Log.i("Tablet","creating publisher/subscriber");
  	sub_tablet = dp.create_subscriber(sub_qos_tablet, null, 0);
      
-     System.out.println("REGISTERING TYPE -----------------");
-     //LongDynamicType data = new LongDynamicType();
-    
-     /*
-     tablet_type = new StructDynamicType();
- 	 tablet_type.set_num_fields(5);
- 	 
- 	 tablet_type.set_field(0, "XVel_DDS",new LongDynamicType(), false);
-     tablet_type.set_field(1, "YVel_DDS", new LongDynamicType(), false);
-     tablet_type.set_field(2, "CompassDir_DDS", new LongDynamicType(), false);
-     tablet_type.set_field(3, "GPS_LN_DDS", new LongDynamicType(), false);
-     tablet_type.set_field(4, "GPS_LT_DDS", new LongDynamicType(), false);
-     tablet_type.set_field(5, "GPS_LT_DDS", new LongDynamicType(), false);
-     */
-     
-	 
+     System.out.println("REGISTERING TYPE -----------------"); 
 	 dataDDSTypeSupport ts = new dataDDSTypeSupport();
- 	
      ReturnCode_t returnValue = ts.register_type(dp, null);
  	
  	if(returnValue != ReturnCode_t.RETCODE_OK)
@@ -298,25 +247,8 @@ public class DDS_Subscriber extends Activity {
  	  System.out.println("ERROR registering type\n");
  	  return;
  	 }
- 	
- 	System.out.println("Declare TS -----------------");
-	    
-	//TypeSupport ts = DynamicType.create_typesupport(tablet_type);
-	 //TypeSupport ts = StringDynamicType.create_typesupport(data);
-	 //ReturnCode_t retval = ts.register_type(dp, ts.get_type_name());
- 	
-
-    
-    System.out.println("TS Declared -----------------");
-    //if (dp == null) return; // failed to initialize DDS, nothing to draw...
-
-
-        	  
-     System.out.println("CREATE TOPIC ---------------------");
-  //   Topic              top          = dp.create_topic("helloTopic", ts.get_type_name(), 
-  //  		 DDS.TOPIC_QOS_DEFAULT, // default qos
-  //						      null, 0); // no listener
-  
+ 	        	  
+     System.out.println("CREATE TOPIC ---------------------"); 
 	  /* create a DDS Topic with the FilterMsg data type. */
 	Topic topics= dp.create_topic("dataDDS",ts.get_type_name(), 
    		DDS.TOPIC_QOS_DEFAULT,
@@ -342,9 +274,6 @@ public class DDS_Subscriber extends Activity {
      DataReaderListener dr_listener = new TestDataReaderListener();
      
      System.out.println("CREATE DATAREADER ----------------");
-     
-     //DynamicTypeDataReader dr = (DynamicTypeDataReader) sub.create_datareader(top, dr_qos, dr_listener, coredx.getDDS_ALL_STATUS());
-     
      //Create DDS Data reader
 	 dataDDSDataReader dr= (dataDDSDataReader) sub.create_datareader(topics, 
              DDS.DATAREADER_QOS_DEFAULT,
