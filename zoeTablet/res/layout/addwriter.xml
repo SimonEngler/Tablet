@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+
+
+
+
+<FrameLayout 
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="vertical"
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"
+   android:layout_gravity="center" 
+   android:background="#7f7f7f6f">
+  <LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:orientation="vertical"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_gravity="center" >
+    <LinearLayout android:id="@+id/rgshape" 
+		  android:orientation="horizontal"
+		  android:layout_width="match_parent" 
+		  android:layout_height="wrap_content">
+      <LinearLayout android:id="@+id/rgshape" 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1">
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:checked="true"	
+		      android:id="@+id/rbsquare" 
+		      android:background="@drawable/rb_square"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+	<TextView android:layout_weight="1" 
+		  android:layout_height="wrap_content" 
+		  android:layout_width="wrap_content" 
+		  android:layout_gravity="center_horizontal"
+		  android:text="Square"/>
+      </LinearLayout>
+      <LinearLayout android:id="@+id/rgshape" 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1">
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbcircle" 
+		      android:background="@drawable/rb_circle"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+	<TextView android:layout_weight="1" 
+		  android:layout_height="wrap_content" 
+		  android:layout_width="wrap_content" 
+		  android:layout_gravity="center_horizontal"
+		  android:text="Circle"/>
+      </LinearLayout>
+      <LinearLayout android:id="@+id/rgshape" 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1">
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbtriangle" 
+		      android:background="@drawable/rb_triangle"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+	<TextView android:layout_weight="1" 
+		  android:layout_height="wrap_content" 
+		  android:layout_width="wrap_content" 
+		  android:layout_gravity="center_horizontal"
+		  android:text="Triangle"/>
+      </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/rgshape" 
+		  android:orientation="horizontal"
+		  android:layout_width="match_parent" 
+		  android:layout_height="wrap_content">
+      <LinearLayout android:id="@+id/rgshape" 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1">
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbred" 
+		      android:background="@drawable/rb_red"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbcyan" 
+		      android:background="@drawable/rb_cyan"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+      </LinearLayout>
+      <LinearLayout android:id="@+id/rgshape" 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1">
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rborange" 
+		      android:background="@drawable/rb_orange"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbblue" 
+		      android:background="@drawable/rb_blue"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+      </LinearLayout>
+      <LinearLayout android:id="@+id/rgshape" 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1">
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbyellow" 
+		      android:background="@drawable/rb_yellow"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbmagenta" 
+		      android:background="@drawable/rb_magenta"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+      </LinearLayout>
+      <LinearLayout android:id="@+id/rgshape" 
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1">
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbgreen" 
+		      android:background="@drawable/rb_green"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+	<ToggleButton android:layout_weight="1" 
+		      android:layout_height="64dip" 
+		      android:layout_width="64dip" 
+		      android:id="@+id/rbblack" 
+		      android:background="@drawable/rb_black"
+		      android:textOff=""
+		      android:textOn=""></ToggleButton>
+      </LinearLayout>
+    </LinearLayout>
+    <Button android:layout_alignParentRight="true" 
+	    android:layout_width="match_parent" 
+	    android:layout_height="wrap_content"
+	    android:text="@string/addWrButton"
+	    android:id="@+id/addButton"></Button>
+  </LinearLayout>
+</FrameLayout>

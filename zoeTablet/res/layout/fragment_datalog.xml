@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:id="@+id/VelY"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:background="@drawable/borders" >
+
+         <TextView
+             android:id="@+id/textView1"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_alignParentTop="false"
+             android:text="@string/t_name"
+             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         <TextView
+             android:id="@+id/XVel"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentRight="true"
+             android:layout_below="@+id/linearLayout2"
+             android:layout_marginTop="17dp"
+             android:text="0"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
+
+         <TextView
+             android:id="@+id/TextView02"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/textView1"
+             android:text="@string/t_xvelocity"
+             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         <TextView
+             android:id="@+id/TextView06"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/TextView02"
+             android:text="@string/t_yvelocity"
+             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         <TextView
+             android:id="@+id/YVel"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentRight="true"
+             android:layout_below="@+id/TextView02"
+             android:text="0"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
+
+         <TextView
+             android:id="@+id/TextView07"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_marginTop="70dp"
+             android:text="@string/t_gps"
+             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         <TextView
+             android:id="@+id/GPSLocation"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentRight="true"
+             android:layout_alignTop="@+id/TextView07"
+             android:text="0:0:0 N 0:0:0 W"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
+
+         <TextView
+             android:id="@+id/TextView08"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/TextView07"
+             android:text="@string/t_compass"
+             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         <TextView
+             android:id="@+id/CompassDir"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentRight="true"
+             android:layout_alignTop="@+id/TextView08"
+             android:text="0 Deg"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
+         
+     </RelativeLayout>

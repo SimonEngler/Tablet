@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <fragment
+        android:id="@+id/left_pane_top"
+        android:layout_width="153dp"
+        android:layout_height="194dp"
+        android:layout_above="@+id/left_pane_bottom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        class="com.example.zoetablet.LoggingFragment"
+        tools:layout="@layout/fragment_datalog" />
+
+
+    
+    <fragment
+        android:id="@+id/right_pane_top"
+        android:layout_width="229dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/left_pane_top"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        class="com.example.zoetablet.BasicFragment2"
+        tools:layout="@layout/fragment_basic2" />
+
+    <fragment
+        android:id="@+id/right_pane_bottom"
+        android:layout_width="229dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/right_pane_top"
+        class="com.example.zoetablet.DatalogFragment"
+        tools:layout="@layout/fragment_datalog" />
+
+    <fragment
+        android:id="@+id/left_pane_bottom"
+        android:layout_width="153dp"
+        android:layout_height="274dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        class="com.example.zoetablet.ConnectionFragment"
+        tools:layout="@layout/fragment_connection" />
+
+    <fragment
+        android:id="@+id/center_pane_top"
+        android:layout_width="77dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/left_pane_top"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/right_pane_top"
+        android:layout_toRightOf="@+id/left_pane_top"
+        class="com.example.zoetablet.BasicFragment"
+        tools:layout="@layout/fragment_basic" />
+
+    <fragment
+        android:id="@+id/center_pane_bottom"
+        android:layout_width="77dp"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/center_pane_top"
+        android:layout_alignRight="@+id/center_pane_top"
+        android:layout_alignTop="@+id/right_pane_bottom"
+        class="com.example.zoetablet.DualJoystickActivity"
+        tools:layout="@layout/dualjoystick" />
+
+    
+</RelativeLayout>

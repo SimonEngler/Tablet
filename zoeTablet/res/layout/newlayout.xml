@@ -1,0 +1,162 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_gravity="left|right"
+    android:columnCount="6"
+    android:gravity="top|bottom|left|right"
+    android:orientation="vertical" >
+
+    <fragment
+        android:id="@+id/fragment1"
+        android:name="LoggingFragment"
+        android:layout_width="172dp"
+        android:layout_height="135dp"
+        android:layout_above="@+id/fragment2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerHorizontal="false"
+        android:layout_centerInParent="false"
+        android:layout_gravity="bottom|end|left|right|top"
+        android:layout_toLeftOf="@id/fragment_content"
+        tools:layout="@layout/activity_fragment_runtime" />
+
+    <fragment
+        android:id="@+id/fragment_content2"
+        android:name="BasicFragment2"
+        android:layout_width="119dp"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fragment2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignRight="@id/fragment_content"
+        android:layout_alignTop="@layout/newlayout"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerInParent="false"
+        android:layout_gravity="top|left|right"
+        tools:layout="@layout/activity_fragment_runtime" />
+
+    <fragment
+        android:id="@+id/fragment_content"
+        android:name="BasicFragment"
+        android:layout_width="126dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@layout/newlayout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/Space2"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerVertical="true"
+        android:layout_gravity="top|bottom|left"
+        android:layout_toLeftOf="@+id/fragment_content2"
+        tools:layout="@layout/fragment_basic" />
+
+    <Space
+        android:id="@+id/Space1"
+        android:layout_width="1dp"
+        android:layout_height="78dp" />
+
+    <Space
+        android:id="@+id/Space2"
+        android:layout_width="1dp"
+        android:layout_height="22dp"
+        android:layout_alignLeft="@+id/fragment1" />
+
+    <Space
+        android:id="@+id/Space3"
+        android:layout_width="1dp"
+        android:layout_height="34dp"
+        android:layout_alignLeft="@+id/fragment1"
+        android:layout_below="@+id/Space2" />
+
+    <Space
+        android:id="@+id/Space4"
+        android:layout_width="1dp"
+        android:layout_height="41dp" />
+
+    <Space
+        android:id="@+id/Space12"
+        android:layout_width="10dp"
+        android:layout_height="1dp" />
+
+    <Space
+        android:id="@+id/Space9"
+        android:layout_width="118dp"
+        android:layout_height="1dp" />
+
+    <Space
+        android:id="@+id/Space11"
+        android:layout_width="100dp"
+        android:layout_height="1dp"
+        android:layout_alignTop="@+id/fragment1"
+        android:layout_toRightOf="@+id/Space9" />
+
+    <Space
+        android:id="@+id/Space15"
+        android:layout_width="55dp"
+        android:layout_height="1dp"
+        android:layout_alignTop="@+id/fragment1" />
+
+    <Space
+        android:id="@+id/Space5"
+        android:layout_width="21dp"
+        android:layout_height="1dp" />
+
+    <Space
+        android:id="@+id/Space6"
+        android:layout_width="100dp"
+        android:layout_height="66dp"
+        android:layout_alignLeft="@+id/fragment1" />
+
+    <Space
+        android:id="@+id/Space7"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content" />
+
+    <Space
+        android:id="@+id/Space8"
+        android:layout_width="100dp"
+        android:layout_height="28dp" />
+
+    <Space
+        android:id="@+id/Space10"
+        android:layout_width="100dp"
+        android:layout_height="4dp"
+        android:layout_alignTop="@+id/Space6" />
+
+    <Space
+        android:id="@+id/Space13"
+        android:layout_width="100dp"
+        android:layout_height="4dp"
+        android:layout_alignTop="@+id/Space6" />
+
+    <Space
+        android:id="@+id/Space14"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content" />
+
+    <fragment
+        android:id="@+id/fragment2"
+        android:name="ConnectionFragment"
+        android:layout_width="174dp"
+        android:layout_height="131dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/fragment1"
+        android:layout_toLeftOf="@id/fragment_content"
+        tools:layout="@layout/activity_fragment_runtime" />
+
+    <fragment
+        android:id="@+id/fragment4"
+        android:name="NavigationFragment"
+        android:layout_width="127dp"
+        android:layout_height="116dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_below="@id/fragment_content2"
+        tools:layout="@layout/fragment_basic2" />
+
+</RelativeLayout>

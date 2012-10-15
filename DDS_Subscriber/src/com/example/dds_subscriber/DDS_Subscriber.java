@@ -27,7 +27,6 @@ import com.toc.coredx.DDS.SubscriberQos;
 import com.toc.coredx.DDS.SubscriptionMatchedStatus;
 import com.toc.coredx.DDS.Topic;
 import com.toc.coredx.DDS.TopicDescription;
-import com.toc.coredx.DDS.TypeSupport;
 import com.toc.coredx.DDS.coredx;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout 
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="vertical"
+   android:layout_width="300px"
+   android:layout_height="wrap_content"
+   android:layout_marginLeft="10px"
+   android:layout_marginRight="10px"
+   android:layout_gravity="center" 
+   android:background="#7f7f7f6f">
+  <LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:orientation="vertical" 
+     android:padding="10px">
+
+    <TextView
+       android:id="@+id/label1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="@string/peerAddress"
+       android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+       android:id="@+id/peerAddress"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" 
+       android:inputType="phone" 
+       android:hint="IP Address of Peer"/>
+
+    <TextView
+       android:id="@+id/label2"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="@string/peerIndex"
+       android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+       android:id="@+id/peerIndex"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:inputType="number" 
+       android:text="0">
+
+      <requestFocus />
+    </EditText>
+
+    <ImageView
+       android:id="@+id/imageView1"
+       android:layout_width="fill_parent"
+       android:layout_height="4px"
+       android:paddingTop="5px" 
+       android:paddingBottom="5px" 
+       android:layout_marginTop="10px" 
+       android:layout_marginBottom="10px" 
+       android:background="@android:drawable/divider_horizontal_dark"/>
+
+    <Button
+       android:id="@+id/addPeerButton"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/addPeerButton"/>
+
+  </LinearLayout>
+
+</FrameLayout>

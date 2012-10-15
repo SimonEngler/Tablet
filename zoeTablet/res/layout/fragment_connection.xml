@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/borders" >
+
+  <RelativeLayout
+      android:id="@+id/RelativeLayout1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:baselineAligned="false"
+      android:gravity="center_vertical"
+      android:orientation="vertical" >
+
+      <LinearLayout
+          android:id="@+id/linearLayout2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentLeft="true"
+          android:layout_gravity="left"
+          android:orientation="vertical" >
+      </LinearLayout>
+
+      <Button
+          android:id="@+id/quitButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_marginBottom="22dp"
+          android:layout_toRightOf="@+id/linearLayout2"
+          android:text="@string/quitButton" />
+
+      <TextView
+          android:id="@+id/textView1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentTop="true"
+          android:layout_marginTop="20dp"
+          android:text="@string/myAddr"
+          android:textAppearance="?android:attr/textAppearanceSmall" />
+
+      <TextView
+          android:id="@+id/myAddress"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_below="@+id/textView1"
+          android:layout_marginTop="20dp"
+          android:text="Medium Text"
+          android:textAppearance="?android:attr/textAppearanceSmall" />
+
+  </RelativeLayout>
+
+</FrameLayout>

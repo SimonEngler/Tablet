@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Zoe InterfaceConsole</string>
+    <string name="btn_fragment">I\'m a Fragment!</string>
+     <string name="btn_fragment_2">I\'m a Fragment!</string>
+    <string name="toast_you_just_clicked_a_fragment">You just clicked a Fragment!</string>
+     <string name="toast_you_just_clicked_a_fragment_2">You just clicked a Fragment!</string>
+   
+  <string name="helpText">Twin Oaks Computing, Inc\nDDS Shapes Demo\non Android!</string>
+  <string name="quitButton">Quit</string>    
+  <string name="writer_name">Writers</string>
+  <string name="addWrButton">Add Writer</string>
+  <string name="remWrButton">Delete Writer</string>
+  <string name="addPeerButton">Add Peer</string>
+  <string name="peerAddress">Peer Address:</string>
+  <string name="peerIndex">Peer Index:</string>
+  <string name="myAddr">My Address:</string>     
+  
+  <string name="t_name">TELEMETRY:</string>
+  <string name="t_compass">Compass</string>
+  <string name="t_xvelocity">Velocity X</string>
+  <string name="t_yvelocity">Velocity Y</string>
+  <string name="t_zvelocity">Velocity Z</string>
+  <string name="t_gps">GPS Location</string> 
+       
+</resources>
