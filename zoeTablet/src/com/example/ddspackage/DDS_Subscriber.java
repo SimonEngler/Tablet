@@ -1,4 +1,5 @@
-package com.example.dds_subscriber;
+package com.example.ddspackage;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,17 +36,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 
-//Import DDS data constructors
-import com.example.dds_subscriber.dataDDS;
-import com.example.dds_subscriber.dataDDSDataReader;
-import com.example.dds_subscriber.dataDDSDataWriter;
-import com.example.dds_subscriber.dataDDSSeq;
-import com.example.dds_subscriber.dataDDSTypeSupport;
 
-public class DDS_Subscriber extends Activity {
+
+
+public class DDS_Subscriber extends Fragment {
 
 	public static DynamicTypeDataReader[] string_dr = null;
 	public static DynamicTypeDataReader[]  readers_tablet      = { null, null, null };
@@ -72,33 +70,33 @@ public class DDS_Subscriber extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	
-   	  WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-      mcastLock = wifi.createMulticastLock("Tablet");
-      mcastLock.acquire();
+   	//  WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+  //    mcastLock = wifi.createMulticastLock("Tablet");
+   //   mcastLock.acquire();
         
 	// open CoreDX DDS license file:
-    BufferedReader br = null;
-    String license = new String("<");
-    try {
-    	Log.i("Debug", "...Opening License");
-      br = new BufferedReader(new InputStreamReader(this.getAssets().open("coredx_dds.lic")));
-    } catch (IOException e) {
-    	Log.i("Debug", "...License did not open");
-      Log.e("Tablet", e.getMessage());
-    }
-    if (br!=null)
-      {
-	String ln;
-	try {
-	  while ((ln = br.readLine()) != null) {
-	    license = new String(license + ln + "\n");
-	  }
-	} catch (IOException e) {
-	  Log.e("Tablet", e.getMessage());
-	}
-      }
-    license = new String(license + ">");
-    Log.i("Tablet", "...License seems to be good");
+ //   BufferedReader br = null;
+ //   String license = new String("<");
+//    try {
+ //   	Log.i("Debug", "...Opening License");
+//      br = new BufferedReader(new InputStreamReader(this.getAssets().open("coredx_dds.lic")));
+//    } catch (IOException e) {
+//    	Log.i("Debug", "...License did not open");
+//      Log.e("Tablet", e.getMessage());
+//    }
+//    if (br!=null)
+ //     {
+//	String ln;
+//	try {
+//	  while ((ln = br.readLine()) != null) {
+//	    license = new String(license + ln + "\n");
+//	  }
+//	} catch (IOException e) {
+//	  Log.e("Tablet", e.getMessage());
+//	}
+//      }
+//    license = new String(license + ">");
+//    Log.i("Tablet", "...License seems to be good");
     
     	
    	 Log.i("Tablet", "Creating Subscriber");
@@ -210,7 +208,7 @@ public class DDS_Subscriber extends Activity {
 
      System.out.println("STARTING -------------------------");
      DomainParticipantFactory dpf = DomainParticipantFactory.get_instance();
-     dpf.set_license(license);
+    // dpf.set_license(license);
 	 dpf.get_default_participant_qos(dp_qos_tablet);
      DomainParticipant dp = null;
 
@@ -225,12 +223,12 @@ public class DDS_Subscriber extends Activity {
      {
      	//failed to create DomainParticipant -- bad license
      	android.util.Log.e("CoreDX DDS", "Unable to create Tablet DomainParticipant.");
-     	new AlertDialog.Builder(this)
-   	  .setTitle("CoreDX DDS Shapes Error")
-   	  .setMessage("Unable to create Tablet DomainParticipant.\n(Bad License?)")
-   	  .setNeutralButton("Close", new DialogInterface.OnClickListener() {
-   	      public void onClick(DialogInterface dlg, int s) { /* do nothing */ } })
-   	  .show();
+   //  	new AlertDialog.Builder(this)
+   	//  .setTitle("CoreDX DDS Shapes Error")
+   	//  .setMessage("Unable to create Tablet DomainParticipant.\n(Bad License?)")
+   	//  .setNeutralButton("Close", new DialogInterface.OnClickListener() {
+//   	      public void onClick(DialogInterface dlg, int s) { /* do nothing */ } })
+ //  	  .show();
      }
      
     SubscriberQos sub_qos_tablet = new SubscriberQos();
@@ -291,22 +289,26 @@ public class DDS_Subscriber extends Activity {
      while ( true ) {
     	 
        try {
-  	     Thread.currentThread().sleep(1000);   // 5 second sleep
+  
+  	Thread.currentThread().sleep(1000);   // 5 second sleep
        } catch (Exception e) {
   	e.printStackTrace();
        }
      
            
-        super.onCreate(savedInstanceState); 
-        setContentView(R.layout.activity_dds__subscriber);
+   //     super.onCreate(savedInstanceState); 
+       // setContentView(R.layout.activity_dds__subscriber);
+   //  }
+    //  }
+
+
+ //   @Override
+ //   public boolean onCreateOptionsMenu(Menu menu) {
+      //  getMenuInflater().inflate(R.menu.activity_dds__subscriber, menu);
+ //       return true;
+ //   }
+     
      }
-      }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_dds__subscriber, menu);
-        return true;
     }
-};
+}
         

@@ -1,10 +1,9 @@
 package com.example.zoetablet;
 
-
-
-
-
+//Import DDS Library
 import com.toc.coredx.DDS.DDS;
+import com.toc.coredx.DDS.DataReader;
+import com.toc.coredx.DDS.DataReaderListener;
 import com.toc.coredx.DDS.DataReaderQos;
 import com.toc.coredx.DDS.DataWriterQos;
 import com.toc.coredx.DDS.DomainParticipant;
@@ -13,19 +12,33 @@ import com.toc.coredx.DDS.DomainParticipantQos;
 import com.toc.coredx.DDS.DynamicType;
 import com.toc.coredx.DDS.DynamicTypeDataReader;
 import com.toc.coredx.DDS.DynamicTypeDataWriter;
+import com.toc.coredx.DDS.LivelinessChangedStatus;
 import com.toc.coredx.DDS.Locator;
 import com.toc.coredx.DDS.LocatorKind;
 import com.toc.coredx.DDS.LongDynamicType;
 import com.toc.coredx.DDS.ParticipantLocator;
 import com.toc.coredx.DDS.Publisher;
 import com.toc.coredx.DDS.PublisherQos;
+import com.toc.coredx.DDS.RequestedDeadlineMissedStatus;
+import com.toc.coredx.DDS.RequestedIncompatibleQosStatus;
+import com.toc.coredx.DDS.ReturnCode_t;
+import com.toc.coredx.DDS.SampleInfoSeq;
+import com.toc.coredx.DDS.SampleLostStatus;
+import com.toc.coredx.DDS.SampleRejectedStatus;
 import com.toc.coredx.DDS.StringDynamicType;
 import com.toc.coredx.DDS.StructDynamicType;
 import com.toc.coredx.DDS.Subscriber;
+import com.toc.coredx.DDS.SubscriberListener;
+import com.toc.coredx.DDS.SubscriberQos;
+import com.toc.coredx.DDS.SubscriptionMatchedStatus;
 import com.toc.coredx.DDS.Topic;
+import com.toc.coredx.DDS.TopicDescription;
 import com.toc.coredx.DDS.TypeSupport;
+import com.toc.coredx.DDS.coredx;
 
+//Import Android library
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -38,18 +51,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.TextView;
-
-//Shapes Imports
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.Enumeration;
-import java.net.NetworkInterface;
-import java.net.InetAddress;
-import java.net.SocketException;
-
-//Android Imports
+import android.R.string;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -63,17 +65,39 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.wifi.WifiManager;
 
-//Import Java Classes
+//Java Imports
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.Enumeration;
+import java.net.NetworkInterface;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Random;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
-//Zoe Tablet imports
+
+//DDS Tablet Data Imports
+import com.example.ddspackage.dataDDS;
+import com.example.ddspackage.dataDDSDataReader;
+import com.example.ddspackage.dataDDSSeq;
+import com.example.ddspackage.dataDDSTypeSupport;
+import com.example.ddspackage.dataDDSDataWriter;
 
 
 @SuppressLint("ParserError")
 public class BasicFragmentActivity extends FragmentActivity {
-	
+		
+    dataDDS dataMessage;
+    dataDDSDataReader dataDataReader;
+    dataDDSDataWriter dataWriter;
+    dataDDSSeq dataSeq;
+ 	dataDDSSeq samples;
+    dataDDSTypeSupport dataTypeSup;
+    ReturnCode_t returnValue;
+		
 	//Joystick variables
 	TextView txtX1, txtY1;
 	TextView txtX2, txtY2;
@@ -88,7 +112,7 @@ public class BasicFragmentActivity extends FragmentActivity {
 	SensorManager sensorManager;
 	ShapesViewFragment shapesView;
     
-	//Shapes Variables
+      //Shapes Variables
 	  public static DomainParticipantFactory dpf          = null;
 	  public static DomainParticipant        dp           = null;
 	  public static DomainParticipantQos     dp_qos       = new DomainParticipantQos();
@@ -133,11 +157,11 @@ public class BasicFragmentActivity extends FragmentActivity {
 	  
 	  //Tablet Data
 	  public static Vector<TabletWriter> tabletData = null; /* Tablet data we are publishing */
-	  public double XVel;
-	  public double YVel;
-	  public double CompassDir;
-	  public double GPS_LN;
-	  public double GPS_LT;
+	  public static float XVel;
+	  public static float YVel;
+	  public static float CompassDir;
+	  public static float GPS_LN;
+	  public static float GPS_LT;
 	  DatalogFragment datalog; 
 	  Random generator = new Random();
 	  
@@ -157,20 +181,19 @@ public class BasicFragmentActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        
         //Set the orientation
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    
         //Shapes and Coredx DDS Initialization
         // magic to enable WiFi multicast to work on some android platforms:
         WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        mcastLock = wifi.createMulticastLock("TocShapes");
+        mcastLock = wifi.createMulticastLock("Tablet");
         mcastLock.acquire();
 
-       // shapes = new Vector<Writer>();
-        
         //Tablet variables
         tablet = new Vector<TabletWriter>();
-       
-        
+              
         // open CoreDX DDS license file:
         BufferedReader br = null;
         String license = new String("<");
@@ -189,106 +212,227 @@ public class BasicFragmentActivity extends FragmentActivity {
     	    license = new String(license + ln + "\n");
     	  }
     	} catch (IOException e) {
-    	  Log.e("Tablet", e.getMessage());
+    	//  Log.e("Tablet", e.getMessage());
     	}
           }
         license = new String(license + ">");
         Log.i("Tablet", "...License seems to be good");
         
-   
-         
         //Initialize Variables
-        XVel = 1.0;
-  	    YVel = 2.0;
-  	    CompassDir = 3.0;
-  	    GPS_LN = 4.0;
-  	    GPS_LT = 5.0;
-/*
-  	    tabletVariables.XVel_DDS = XVel;
-  	    tabletVariables.YVel_DDS = YVel;
-  	    tabletVariables.CompassDir_DDS = CompassDir;
-  	    tabletVariables.GPS_LN_DDS = GPS_LN;
-  	    tabletVariables.GPS_LT_DDS = GPS_LT;
-  */	    
-  	     
-        dpf_tablet = DomainParticipantFactory.get_instance(); // get DomainParticipantFactory
-        dpf_tablet.set_license(license);                      // configure DPF with the license string
-        dpf_tablet.get_default_participant_qos(dp_qos_tablet);
-        
-        //*************************
-        //Tablet variable - create DDS entities for reading tablet data
-        dp_tablet = dpf_tablet.create_participant(0, dp_qos_tablet, null, 0);
-        
-        if(dp_tablet == null)
-        {
-        	//failed to create DomainParticipant -- bad license
-        	android.util.Log.e("CoreDX DDS", "Unable to create Tablet DomainParticipant.");
-        	new AlertDialog.Builder(this)
-      	  .setTitle("CoreDX DDS Shapes Error")
-      	  .setMessage("Unable to create Tablet DomainParticipant.\n(Bad License?)")
-      	  .setNeutralButton("Close", new DialogInterface.OnClickListener() {
-      	      public void onClick(DialogInterface dlg, int s) { /* do nothing */ } })
-      	  .show();
-        }
-        else
-        {
-        	PublisherQos pub_qos_tablet = new PublisherQos();
-        	Log.i("Tablet","creating publisher/subscriber");
-        	
-        	sub_tablet = dp_tablet.create_subscriber(null, null, 0);
-        	dp_tablet.get_default_publisher_qos(pub_qos_tablet);
-        	pub_tablet = dp_tablet.create_publisher(pub_qos_tablet, null, 0);
-        	
-        	DataReaderQos dr_qos_tablet = new DataReaderQos();
-        	DataWriterQos dw_qos_tablet = new DataWriterQos();
-        	
-        	sub_tablet.get_default_datareader_qos(dr_qos_tablet);
-        	pub_tablet.get_default_datawriter_qos(dw_qos_tablet);
-        	
-        	// Construct a DynamicType based on the 'Tablet' data type
-        	//  -- This is an alternative to using a TypeSupport 
-        	//  generated via the coredx_ddl tool.
-        	Log.i("Tablet", "creating 'Tablet' data type...");
-        	tablet_type = new StructDynamicType();
-        	tablet_type.set_num_fields(5);
-        	StringDynamicType Label = new StringDynamicType();
-        	Label.set_max_length(128);
-        	
-        	 tablet_type.set_field(0, "XVel_DDS",new LongDynamicType(), false);
-	         tablet_type.set_field(1, "YVel_DDS", new LongDynamicType(), false);
-	         tablet_type.set_field(2, "CompassDir_DDS", new LongDynamicType(), false);
-	         tablet_type.set_field(3, "GPS_LN_DDS", new LongDynamicType(), false);
-	         tablet_type.set_field(4, "GPS_LT_DDS", new LongDynamicType(), false);
-	         tablet_type.set_field(5, "GPS_LT_DDS", new LongDynamicType(), false);
-	        	
-        	TypeSupport ts = DynamicType.create_typesupport(tablet_type);
-        	ts.register_type(dp_tablet, "TabletType");
-        	
-        	for (int i = 0;i < topic_names_tablet.length; i++) 
-      	  {
-            Log.i("Tablet", "creating " + topic_names_tablet[i] + " Topic...");
-      	    topics_tablet[i] = dp_tablet.create_topic(topic_names_tablet[i], "TabletType", DDS.TOPIC_QOS_DEFAULT, null, 0);
-      	    Log.i("Tablet", "creating " + topic_names_tablet[i] + " Reader...");
-      	    readers_tablet[i] = (DynamicTypeDataReader)sub_tablet.create_datareader(topics_tablet[i], dr_qos_tablet, null, 0);
-      	    Log.i("Tablet", "creating " + topic_names[i] + " Writer...");
-      	    writers_tablet[i] = (DynamicTypeDataWriter)pub_tablet.create_datawriter(topics_tablet[i], dw_qos_tablet, null, 0);
-      	  }
-            }
-          Log.i("Tablet", "...finished initialize Tablet DDS");
-        	
-          //Broadcast Tablet Data
-          Log.i("Tablet", "Begin Publish Data");
+       XVel = 1;
+  	    YVel = 2;
+  	    CompassDir = 3;
+  	    GPS_LN = 4;
+  	    GPS_LT = 5;
+  	       
+  		 Log.i("Tablet", "Creating Subscriber");
+  	     class TestDataReaderListener implements DataReaderListener 
+  	     {
+  	    	
+  	      @Override
+  	  	public long get_nil_mask() { return 0; }
+
+  	      @Override
+  	  	public void on_requested_deadline_missed(DataReader dr,
+  	  					       RequestedDeadlineMissedStatus status) { 
+  	  	System.out.println(" @@@@@@@@@@@     REQUESTED DEADLINE MISSED    @@@@@"); 
+  	  	System.out.println(" @@@@@@@@@@@                                  @@@@@" );
+  	  	System.out.println(" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); 
+  	       };
+
+  	       @Override
+  	  	public void on_requested_incompatible_qos(DataReader dr,
+  	  						RequestedIncompatibleQosStatus status) { 
+  	  	System.out.println(" @@@@@@@@@@@     REQUESTED INCOMPAT QOS    @@@@@@@@"); 
+  	  	System.out.println(" @@@@@@@@@@@        dr      = " + dr);
+  	  	System.out.println(" @@@@@@@@@@@                               @@@@@@@@" );
+  	  	System.out.println(" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); 
+  	       };
+
+  	       @Override
+  	  	public void on_sample_rejected(DataReader dr, 
+  	  				     SampleRejectedStatus status) { 
+  	       };
+
+  	       @Override
+  	  	public void on_liveliness_changed(DataReader dr,
+  	  					LivelinessChangedStatus status)
+  	       {
+  	      	TopicDescription   td = dr.get_topicdescription();
+  	    	System.out.println(" @@@@@@@@@@@     LIVELINESS CHANGED      @@@@@@@@@@"); 
+  	       }
+
+  	       @Override
+  	  	public void on_subscription_matched(DataReader dr, 
+  	  					  SubscriptionMatchedStatus status)
+  	       { 
+  	  	TopicDescription   td = dr.get_topicdescription();
+  	  	System.out.println(" @@@@@@@@@@@     SUBSCRIPTION MATCHED    @@@@@@@@@@"); 
+  	  	System.out.println(" @@@@@@@@@@@        topic   = " + td.get_name() + " (type: " + td.get_type_name() + ")");
+  	  	System.out.println(" @@@@@@@@@@@        current = " + status.get_current_count());
+  	  	System.out.println(" @@@@@@@@@@@                             @@@@@@@@@@" );
+  	  	System.out.println(" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); 
+  	       }
+
+  	       @Override
+  	  	public void on_sample_lost(DataReader dr, 
+  	  				 SampleLostStatus status) { 
+  	    	   System.out.println(" @@@@@@@@@@@   SAMPLE LOST    @@@@@@@@@@"); 
+  	       };
+
+  	       @Override
+  	    public void on_data_available(DataReader dr)
+  	    {	
+  	       
+  	       TopicDescription td = dr.get_topicdescription();
+  	       dataDDSDataReader data_message = (dataDDSDataReader) dr;
+  	       System.out.println(" @@@@@@@@@@@     DATA AVAILABLE          @@@@@@@@@@"); 
+  	   	   System.out.println(" @@@@@@@@@@@        topic = " + td.get_name() + " (type: " + td.get_type_name() + ")");
+  	   	
+  	       samples = new dataDDSSeq();
+  	       SampleInfoSeq si      = new SampleInfoSeq();
+  	       
+  	       ReturnCode_t  retval  = data_message.take(samples, si, 100, 
+  			       coredx.DDS_ANY_SAMPLE_STATE, 
+  			       coredx.DDS_ANY_VIEW_STATE, 
+  			       coredx.DDS_ANY_INSTANCE_STATE);
+  	       System.out.println(" @@@@@@@@@@@        DR.read() ===> " + retval);
+  	  	   
+  	       if (retval == ReturnCode_t.RETCODE_OK)
+  	 	  {
+  	 	    if (samples.value == null)
+  	 	      System.out.println(" @@@@@@@@@@@        samples.value = null");
+  	 	    else
+  	 	      {
+  	 		System.out.println(" @@@@@@@@@@@        samples.value.length= " + samples.value.length);
+  	 		for (int i = 0; i < samples.value.length; i++)
+  	 		  {
+  	 		    System.out.println("    State       : " + 
+  	 				       (si.value[i].instance_state == 
+  	 					coredx.DDS_ALIVE_INSTANCE_STATE?"ALIVE":"NOT ALIVE") );
+  	 		    System.out.println("    TimeStamp   : " + si.value[i].source_timestamp.sec + "." + 
+  	                                                               si.value[i].source_timestamp.nanosec);
+  	 		    System.out.println("    Handle      : " + si.value[i].instance_handle.value);
+  	 		    System.out.println("    WriterHandle: " + si.value[i].publication_handle.value);
+  	 		    System.out.println("    SampleRank  : " + si.value[i].sample_rank);
+  	 		    if (si.value[i].valid_data)
+  	 		    System.out.println("       XVel: " + samples.value[i].XVel_DDS);
+  	 		    System.out.println("       YVel: " + samples.value[i].YVel_DDS);
+  	 		    System.out.println(" CompassDir: " + samples.value[i].CompassDir_DDS);
+  	 		    System.out.println("     GPS_LT: " + samples.value[i].GPS_LT_DDS);
+  	 		    System.out.println("     GPS_LN: " + samples.value[i].GPS_LN_DDS);
+  	 		    
+  	 		    //Capture data values for display
+  	 		    BasicFragmentActivity.XVel =  samples.value[i].XVel_DDS;
+  	 		    BasicFragmentActivity.YVel =  samples.value[i].YVel_DDS;
+  	 		    BasicFragmentActivity.CompassDir =  samples.value[i].CompassDir_DDS;
+  	 		    BasicFragmentActivity.GPS_LT =  samples.value[i].GPS_LT_DDS;
+  	 		    BasicFragmentActivity.GPS_LN =  samples.value[i].GPS_LN_DDS;
+  	 		  }
+  	 	      }
+  	 	    data_message.return_loan(samples, si);
+  	 	  }
+  	 	else
+  	 	  {
+  	 	  }
+  	 	System.out.println(" @@@@@@@@@@@                             @@@@@@@@@@" );
+  	 	System.out.println(" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"); 
+  	       };
+  	     };
+  	    
+  	    
+  	   System.out.println("STARTING -------------------------");
+       DomainParticipantFactory dpf = DomainParticipantFactory.get_instance();
+       dpf.set_license(license);
+  	 dpf.get_default_participant_qos(dp_qos_tablet);
+       DomainParticipant dp = null;
+
+       System.out.println("CREATE PARTICIPANT ---------------");
+       dp = dpf.create_participant(0,    /* domain Id   */
+      		 dp_qos_tablet,
+      		 //null, /* default qos */
+    				null, /* no listener */
+    				0);
        
-          /*
-          newTabletWriter(writers_tablet,tabletVariables.XVel_DDS
-        		  ,tabletVariables.YVel_DDS
-        		  ,tabletVariables.CompassDir_DDS
-        		  ,tabletVariables.GPS_LT_DDS
-        		  ,tabletVariables.GPS_LN_DDS);
-          */
-        // newTabletWriter(writers_tablet,XVel,YVel,CompassDir,GPS_LT,GPS_LN);
-        newTabletWriter();
-         
+       if(dp == null)
+       {
+       	//failed to create DomainParticipant -- bad license
+       	android.util.Log.e("CoreDX DDS", "Unable to create Tablet DomainParticipant.");
+     //  	new AlertDialog.Builder(this)
+     	//  .setTitle("CoreDX DDS Shapes Error")
+     	//  .setMessage("Unable to create Tablet DomainParticipant.\n(Bad License?)")
+     	//  .setNeutralButton("Close", new DialogInterface.OnClickListener() {
+//     	      public void onClick(DialogInterface dlg, int s) { /* do nothing */ } })
+   //  	  .show();
+       }
+       
+      SubscriberQos sub_qos_tablet = new SubscriberQos();
+   	Log.i("Tablet","creating publisher/subscriber");
+   	sub_tablet = dp.create_subscriber(sub_qos_tablet, null, 0);
+       
+       System.out.println("REGISTERING TYPE -----------------"); 
+  	 dataDDSTypeSupport ts = new dataDDSTypeSupport();
+       ReturnCode_t returnValue = ts.register_type(dp, null);
+   	
+   	if(returnValue != ReturnCode_t.RETCODE_OK)
+   	{
+   	  System.out.println("ERROR registering type\n");
+   	  return;
+   	 }
+   	        	  
+       System.out.println("CREATE TOPIC ---------------------"); 
+  	  /* create a DDS Topic with the FilterMsg data type. */
+  	Topic topics= dp.create_topic("dataDDS",ts.get_type_name(), 
+     		DDS.TOPIC_QOS_DEFAULT,
+     		null,
+     		0);
+  	
+  	if(topics == null)
+  	{
+  		System.out.println("Error creating topic");
+  		return;
+  	}
+  	
+       System.out.println("CREATE SUBSCRIBER ----------------");
+       SubscriberQos       sub_qos      = null;
+       SubscriberListener  sub_listener = null;
+       Subscriber          sub          = dp.create_subscriber(sub_qos, sub_listener, 0);  
+
+       System.out.println("READER VARIABLES ----------------");
+       DataReaderQos dr_qos = new DataReaderQos();
+       sub.get_default_datareader_qos(dr_qos);
+       dr_qos.entity_name.value = "JAVA_DR";
+       dr_qos.history.depth = 10;
+       DataReaderListener dr_listener = new TestDataReaderListener();
+       
+       System.out.println("CREATE DATAREADER ----------------");
+       //Create DDS Data reader
+  	 dataDDSDataReader dr= (dataDDSDataReader) sub.create_datareader(topics, 
+               DDS.DATAREADER_QOS_DEFAULT,
+               dr_listener, 
+               DDS.DATA_AVAILABLE_STATUS);
+     
+       System.out.println("DATAREADER CREATED ----------------");
+       
+       //Cheack to see if DDS Data Reader worked 
+  	    if(dr == null)
+       {
+         System.out.println("ERROR creating data reader\n");
+         //return;
+        }
+       
+  	    
+  //     while ( true ) {
+      	 
+  //       try {
+  //  
+  //  	Thread.currentThread().sleep(1000);   // 5 second sleep
+   //      } catch (Exception e) {
+   // 	e.printStackTrace();
+    //     }
+    //   }
+    
+  	            
         
  
         // We default to building our Fragment at runtime, but you can switch the layout here
@@ -316,12 +460,14 @@ public class BasicFragmentActivity extends FragmentActivity {
             // the second part of the tutorial.
         	
             
+    	    
         	//Shapes Fragment
             Log.i("Debug", "...calling fragment center pane");
             FragmentTransaction ft = fm.beginTransaction();
             ft.add(R.id.center_pane_top, new BasicFragment());
             ft.addToBackStack(null);
 
+     
             //Logging Fragment
             Log.i("Debug", "...calling fragment left pane top");
             //ft.add(R.id.left_pane_top, new LoggingFragment());
@@ -354,10 +500,7 @@ public class BasicFragmentActivity extends FragmentActivity {
             
             //Commit the fragment or it will not be added
             Log.i("Debug", "...comitting");
-            ft.commit(); 
-            
-            
-                         
+            ft.commit();                 
         }
        
      //Joystick variables
@@ -443,7 +586,7 @@ public class BasicFragmentActivity extends FragmentActivity {
      if (tv_GPSLocation != null)
          tv_GPSLocation.setText("<detecting>");
    
-     mHandler.postDelayed(mUpdateDatalog, 50); // every 1 sec */
+     mHandler.postDelayed(mUpdateDatalog, 500); // every 1 sec */
      
      
      
@@ -720,56 +863,28 @@ public class BasicFragmentActivity extends FragmentActivity {
      	        char[] GPS = null;
      	        char[] Compass = null;
      	        String oldInfo = null;
-     	        
-     	       Log.i("Tablet", "...In update function");
-          	      if (BasicFragmentActivity.tablet != null)
-          		{
-          	    	Log.i("Tablet", "...there is a tablet activity");
-          		}
-                    Log.i("Tablet","ITERATOR: " + BasicFragmentActivity.writers_tablet.length);
-                    for(int a=0; a < (BasicFragmentActivity.writers_tablet.length); a++)
-                    		{
-                    	       Log.i("Tablet","values: " + writers_tablet[a].toString());
-                    		}
-          		    // tabletWriter = BasicFragmentActivity.tablet.elementAt(1);
-          		//  for (; iterator.hasNext(); )
-          		//   {
-          		      
-          		    //  TabletWriter tabletWriter = iterator.next();
-                    if(tabletWriter.isEmpty())
-                    {
-                    	 oldInfo = getDatalogValues(XVel);
-                    }
-                    else
-                    {
-                    	 oldInfo = getDatalogValues(tabletWriter.elements().nextElement().XVel_DDS);
-                    	
-                    }
-          		 //     Xvelocity = oldInfo.toCharArray();
-         	     //     tv_XVel.setText(Xvelocity,0,Xvelocity.length);
-
-          	    //     Log.i("Tablet", "...In update tabler iterator. XVel= " + tabletWriter.XVel_DDS);
-          		 //   }
-          	//	}
-          	//    Log.i("Tablet", "...passed update function");
+     	        double hello;
+ 
+          	    Log.i("Tablet", "...passed update function");
      	  
-     	        //X velocity
-      	        oldInfo = getDatalogValues(XVel);
+     	        //X velocity	    
+      	        oldInfo = String.valueOf(BasicFragmentActivity.XVel);
      	        Xvelocity = oldInfo.toCharArray();
      	        tv_XVel.setText(Xvelocity,0,Xvelocity.length); 
           
      	        //Y velocity
-     	        oldInfo = getDatalogValues(YVel);
+     	        oldInfo = String.valueOf(BasicFragmentActivity.YVel);
     	        Yvelocity = oldInfo.toCharArray();
     	        tv_YVel.setText(Yvelocity,0,Yvelocity.length); 
      	        
      	        //GPS Location
-    	        oldInfo = getDatalogValues(GPS_LN) + "  W  " + getDatalogValues(GPS_LT) + "  N";
+    	        
+    	        oldInfo = getDatalogValues((double) BasicFragmentActivity.GPS_LN) + "  W  " + getDatalogValues((double) BasicFragmentActivity.GPS_LT) + "  N";
      	        GPS = oldInfo.toCharArray();
      	        tv_GPSLocation.setText(GPS,0,GPS.length);
      	        
      	        //Compass Direction
-    	        oldInfo = getDatalogValues(CompassDir);
+    	        oldInfo = getDatalogValues((double) BasicFragmentActivity.CompassDir);
      	        Compass = oldInfo.toCharArray();
      	        tv_CompassDir.setText(Compass,0,Compass.length);
      	        

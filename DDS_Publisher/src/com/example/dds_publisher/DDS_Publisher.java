@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.view.Menu;
 import android.util.Log;
 import java.io.*;
+import java.util.Random;
 import java.util.Vector;
 import com.toc.coredx.DDS.DDS;
 import com.toc.coredx.DDS.DataWriterListener;
@@ -32,7 +33,9 @@ import com.example.dds_publisher.dataDDSDataReader;
 import com.example.dds_publisher.dataDDSDataWriter;
 import com.example.dds_publisher.dataDDSSeq;
 import com.example.dds_publisher.dataDDSTypeSupport;
-
+import java.util.Random;
+import java.text.DecimalFormat;
+import java.util.Vector;
 
 public class DDS_Publisher extends Activity {
 	public static StructDynamicType        tablet_type   = null;
@@ -46,6 +49,7 @@ public class DDS_Publisher extends Activity {
     public static MulticastLock            mcastLock = null;
     public static Vector<Writer> publisher = null;
     
+    
     //Declare DDS Variables
 	dataDDS dataMessage;
 	dataDDSDataReader dataDataReader;
@@ -53,7 +57,10 @@ public class DDS_Publisher extends Activity {
 	dataDDSSeq dataSeq;
 	dataDDSTypeSupport dataTypeSup;
 	ReturnCode_t returnValue;
-	
+	Random generator = new Random();
+    DecimalFormat twoDForm = new DecimalFormat("#.##");
+    
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	    
@@ -163,11 +170,11 @@ public class DDS_Publisher extends Activity {
 	    while ( true ) {
 	    	System.out.println("initialize data...\n");
 	 	    dataDDS dataMessage = new dataDDS();
-	 		dataMessage.XVel_DDS = (float) 666.0;
-	 		dataMessage.YVel_DDS = (float) 666.0;
-	 		dataMessage.CompassDir_DDS = (float) 124.0;
-	 		dataMessage.GPS_LN_DDS = (float) 12.0;
-	 		dataMessage.GPS_LT_DDS = (float) 123.0;
+	 		dataMessage.XVel_DDS = getDatalogValues(666);
+	 		dataMessage.YVel_DDS = getDatalogValues(666);
+	 		dataMessage.CompassDir_DDS = getDatalogValues(124);
+	 		dataMessage.GPS_LN_DDS = getDatalogValues(12);
+	 		dataMessage.GPS_LT_DDS = getDatalogValues(13);
 	 		System.out.println("data ready...\n");
 	    	
             returnValue = dw.write(dataMessage, null);
@@ -194,5 +201,14 @@ public class DDS_Publisher extends Activity {
         getMenuInflater().inflate(R.menu.activity_dds__publisher, menu);
         return true;
     }
+    
+	 public float getDatalogValues(float value)
+	  {  
+		 //Set the value
+		 value = value*generator.nextFloat();
+        value = Float.valueOf(twoDForm.format(value)); 
+		 return value;
+	  }
+	  
     
     }
