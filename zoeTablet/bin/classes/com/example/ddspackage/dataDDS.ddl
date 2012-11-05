@@ -4,6 +4,4 @@ struct dataDDS {
 	float CompassDir_DDS;
 	float GPS_LN_DDS;
 	float GPS_LT_DDS;
-        string Log_DDS;
-        octet data_image_DDS;
 };

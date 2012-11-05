@@ -36,7 +36,8 @@ public class AddPeer extends FragmentActivity {
     // construct an InputFilter for IPv4 addresses
     InputFilter[] filters = new InputFilter[1];
     filters[0] = new InputFilter() {
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) 
+        @Override
+		public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) 
 	{
 	  if (end > start) 
 	    {
@@ -65,6 +66,7 @@ public class AddPeer extends FragmentActivity {
 
     // add callbacks to buttons... 
     ((Button)findViewById(R.id.addPeerButton)).setOnClickListener(new OnClickListener() {
+	@Override
 	public void onClick(View v) {
 
 	  // read results... if valid, construct 'return' data 

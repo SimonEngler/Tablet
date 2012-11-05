@@ -31,7 +31,8 @@ public class AddWriter extends FragmentActivity {
   //}
 
   /** Called when the activity is first created. */
-  public void onCreate(Bundle savedInstanceState) {
+  @Override
+public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.addwriter);
   }
@@ -46,18 +47,22 @@ public class AddWriter extends FragmentActivity {
     rbtriangle  = (ToggleButton) addWriterActivity.findViewById(R.id.rbtriangle);
     
     rbsquare.setOnClickListener(new OnClickListener() { 
+	@Override
 	public void onClick(View v) { if (rbsquare.isChecked()) { rbcircle.setChecked(false); rbtriangle.setChecked(false); } }
       });
     
     rbcircle.setOnClickListener(new OnClickListener() {
+	@Override
 	public void onClick(View v) { if (rbcircle.isChecked()) { rbsquare.setChecked(false); rbtriangle.setChecked(false); } }
       });
     
     rbtriangle.setOnClickListener(new OnClickListener() {
+	@Override
 	public void onClick(View v) { if (rbtriangle.isChecked()) { rbsquare.setChecked(false); rbcircle.setChecked(false); } }
       });
 
     OnClickListener color_ocl = new OnClickListener() {
+	@Override
 	public void onClick(View v) {
 	  ToggleButton tb = (ToggleButton)v;
 	  if (tb.isChecked())
@@ -73,6 +78,7 @@ public class AddWriter extends FragmentActivity {
       }
 
     ((Button)addWriterActivity.findViewById(R.id.addButton)).setOnClickListener(new OnClickListener() {
+	@Override
 	public void onClick(View v) {
 	  // read results... if valid, construct 'return' data 
 	  String shape = null;

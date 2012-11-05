@@ -32,6 +32,7 @@ public class ShapesViewFragment extends SurfaceView
 {
 
   private final class HandlerExtension extends Handler {
+		@Override
 		public void handleMessage(Message m) { }
 	}
 
@@ -164,7 +165,7 @@ public class ShapesThread extends Thread
               f_size  = (LongDynamicType)shape.get_field(3);
                     		
                     		
-              paint.setColor((Integer)colorMap.get(f_color.get_string()));
+              paint.setColor(colorMap.get(f_color.get_string()));
                     		
               int size = f_size.get_long();
               int x    = f_x.get_long();
@@ -207,7 +208,8 @@ public class ShapesThread extends Thread
       }
     }
         
-    public void run() 
+    @Override
+	public void run() 
     {
       android.util.Log.i("Shapes", "display thread starting...");
       while (mState != STATE_DESTROY) {
@@ -278,7 +280,8 @@ public class ShapesThread extends Thread
 	    
   /* Callback invoked when the surface dimensions change. */
   //	@Override
-  public void 
+  @Override
+public void 
   surfaceChanged(SurfaceHolder holder, 
                  int format, 
                  int width, 
@@ -288,7 +291,8 @@ public class ShapesThread extends Thread
   }
 
   //	@Override
-  public void surfaceCreated(SurfaceHolder arg0) {
+  @Override
+public void surfaceCreated(SurfaceHolder arg0) {
     // start the thread here so that we don't busy-wait in run()
     // waiting for the surface to be created
     Log.i("Shapes", "surfaceCreated()...");
@@ -296,7 +300,8 @@ public class ShapesThread extends Thread
   }
 
   //	@Override    
-  public void surfaceDestroyed(SurfaceHolder arg0) {
+  @Override
+public void surfaceDestroyed(SurfaceHolder arg0) {
     Log.i("Shapes", "surfaceDestroyed()...");
     thread.setSurface(false);
   }

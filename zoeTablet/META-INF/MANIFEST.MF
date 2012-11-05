@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BasicFragmentActivity
+Bundle-SymbolicName: com.example.zoetablet.BasicFragmentActivity2
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: BasicFragmentActivity.jar,
+ stengler/android-sdks/platforms/android-16/android.jar,
+ stengler/workspace/Tablet/zoeTablet/libs/android-support-v4.jar
+Export-Package: com.example.ddspackage,
+ com.example.zoetablet

@@ -5,27 +5,22 @@ import com.toc.coredx.DDS.DDS;
 import com.toc.coredx.DDS.DataReader;
 import com.toc.coredx.DDS.DataReaderListener;
 import com.toc.coredx.DDS.DataReaderQos;
-import com.toc.coredx.DDS.DataWriterQos;
 import com.toc.coredx.DDS.DomainParticipant;
 import com.toc.coredx.DDS.DomainParticipantFactory;
 import com.toc.coredx.DDS.DomainParticipantQos;
-import com.toc.coredx.DDS.DynamicType;
 import com.toc.coredx.DDS.DynamicTypeDataReader;
 import com.toc.coredx.DDS.DynamicTypeDataWriter;
 import com.toc.coredx.DDS.LivelinessChangedStatus;
 import com.toc.coredx.DDS.Locator;
 import com.toc.coredx.DDS.LocatorKind;
-import com.toc.coredx.DDS.LongDynamicType;
 import com.toc.coredx.DDS.ParticipantLocator;
 import com.toc.coredx.DDS.Publisher;
-import com.toc.coredx.DDS.PublisherQos;
 import com.toc.coredx.DDS.RequestedDeadlineMissedStatus;
 import com.toc.coredx.DDS.RequestedIncompatibleQosStatus;
 import com.toc.coredx.DDS.ReturnCode_t;
 import com.toc.coredx.DDS.SampleInfoSeq;
 import com.toc.coredx.DDS.SampleLostStatus;
 import com.toc.coredx.DDS.SampleRejectedStatus;
-import com.toc.coredx.DDS.StringDynamicType;
 import com.toc.coredx.DDS.StructDynamicType;
 import com.toc.coredx.DDS.Subscriber;
 import com.toc.coredx.DDS.SubscriberListener;
@@ -33,12 +28,11 @@ import com.toc.coredx.DDS.SubscriberQos;
 import com.toc.coredx.DDS.SubscriptionMatchedStatus;
 import com.toc.coredx.DDS.Topic;
 import com.toc.coredx.DDS.TopicDescription;
-import com.toc.coredx.DDS.TypeSupport;
 import com.toc.coredx.DDS.coredx;
+import com.toc.coredx.DDS.coredxConstants;
 
 //Import Android library
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -51,10 +45,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.TextView;
-import android.R.string;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -219,7 +210,7 @@ public class BasicFragmentActivity extends FragmentActivity {
         Log.i("Tablet", "...License seems to be good");
         
         //Initialize Variables
-        XVel = 1;
+       XVel = 1;
   	    YVel = 2;
   	    CompassDir = 3;
   	    GPS_LN = 4;
@@ -293,9 +284,9 @@ public class BasicFragmentActivity extends FragmentActivity {
   	       SampleInfoSeq si      = new SampleInfoSeq();
   	       
   	       ReturnCode_t  retval  = data_message.take(samples, si, 100, 
-  			       coredx.DDS_ANY_SAMPLE_STATE, 
-  			       coredx.DDS_ANY_VIEW_STATE, 
-  			       coredx.DDS_ANY_INSTANCE_STATE);
+  			       coredxConstants.DDS_ANY_SAMPLE_STATE, 
+  			       coredxConstants.DDS_ANY_VIEW_STATE, 
+  			       coredxConstants.DDS_ANY_INSTANCE_STATE);
   	       System.out.println(" @@@@@@@@@@@        DR.read() ===> " + retval);
   	  	   
   	       if (retval == ReturnCode_t.RETCODE_OK)
@@ -309,7 +300,7 @@ public class BasicFragmentActivity extends FragmentActivity {
   	 		  {
   	 		    System.out.println("    State       : " + 
   	 				       (si.value[i].instance_state == 
-  	 					coredx.DDS_ALIVE_INSTANCE_STATE?"ALIVE":"NOT ALIVE") );
+  	 					coredxConstants.DDS_ALIVE_INSTANCE_STATE?"ALIVE":"NOT ALIVE") );
   	 		    System.out.println("    TimeStamp   : " + si.value[i].source_timestamp.sec + "." + 
   	                                                               si.value[i].source_timestamp.nanosec);
   	 		    System.out.println("    Handle      : " + si.value[i].instance_handle.value);
@@ -512,17 +503,20 @@ public class BasicFragmentActivity extends FragmentActivity {
        
        JoystickMovedListener _listenerLeft = new JoystickMovedListener() {
 
-   		public void OnMoved(int pan, int tilt) {
+   		@Override
+		public void OnMoved(int pan, int tilt) {
    			txtX1.setText(Integer.toString(pan));
    			txtY1.setText(Integer.toString(tilt));
    		}
 
-   		public void OnReleased() {
+   		@Override
+		public void OnReleased() {
    			txtX1.setText("released");
    			txtY1.setText("released");
    		}
    		
-   		public void OnReturnedToCenter() {
+   		@Override
+		public void OnReturnedToCenter() {
    			txtX1.setText("stopped");
    			txtY1.setText("stopped");
    		};
@@ -530,17 +524,20 @@ public class BasicFragmentActivity extends FragmentActivity {
 
        JoystickMovedListener _listenerRight = new JoystickMovedListener() {
 
-   		public void OnMoved(int pan, int tilt) {
+   		@Override
+		public void OnMoved(int pan, int tilt) {
    			txtX2.setText(Integer.toString(pan));
    			txtY2.setText(Integer.toString(tilt));
    		}
 
-   		public void OnReleased() {
+   		@Override
+		public void OnReleased() {
    			txtX2.setText("released");
    			txtY2.setText("released");
    		}
    		
-   		public void OnReturnedToCenter() {
+   		@Override
+		public void OnReturnedToCenter() {
    			txtX2.setText("stopped");
    			txtY2.setText("stopped");
    		};
@@ -628,7 +625,8 @@ public class BasicFragmentActivity extends FragmentActivity {
       
       //Compass Function
       private final SensorEventListener sensorEventListener = new SensorEventListener() {
-        public void onSensorChanged(SensorEvent event) {
+        @Override
+		public void onSensorChanged(SensorEvent event) {
           if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
             aValues = event.values;
           if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
@@ -641,7 +639,8 @@ public class BasicFragmentActivity extends FragmentActivity {
         }
 
         //Compass Function
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+        @Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {}
      	};
      	
      	@Override
@@ -672,7 +671,8 @@ public class BasicFragmentActivity extends FragmentActivity {
      	//A call-back for when the user presses the 'Quit' button.
      	   
      	  OnClickListener mQuitListener = new OnClickListener() {
-     	      public void onClick(View v) {
+     	      @Override
+			public void onClick(View v) {
      		finish();
      	      }
      	    };
@@ -680,7 +680,8 @@ public class BasicFragmentActivity extends FragmentActivity {
      	    
           //runnable to periodically update our IP address on main screen 
      	  private Runnable mUpdateMyAddress = new Runnable() {
-     	      public void run() {
+     	      @Override
+			public void run() {
      		BasicFragmentActivity.updateMyAddress();
 
      		// and do it again, later
@@ -690,7 +691,8 @@ public class BasicFragmentActivity extends FragmentActivity {
      	    
      	    //Update datalog
      	    private Runnable mUpdateDatalog = new Runnable() {
-     	    	public void run(){
+     	    	@Override
+				public void run(){
      	    	updateDatalog(tablet);
      	    	}
      	    };
@@ -879,12 +881,12 @@ public class BasicFragmentActivity extends FragmentActivity {
      	        
      	        //GPS Location
     	        
-    	        oldInfo = getDatalogValues((double) BasicFragmentActivity.GPS_LN) + "  W  " + getDatalogValues((double) BasicFragmentActivity.GPS_LT) + "  N";
+    	        oldInfo = getDatalogValues(BasicFragmentActivity.GPS_LN) + "  W  " + getDatalogValues(BasicFragmentActivity.GPS_LT) + "  N";
      	        GPS = oldInfo.toCharArray();
      	        tv_GPSLocation.setText(GPS,0,GPS.length);
      	        
      	        //Compass Direction
-    	        oldInfo = getDatalogValues((double) BasicFragmentActivity.CompassDir);
+    	        oldInfo = getDatalogValues(BasicFragmentActivity.CompassDir);
      	        Compass = oldInfo.toCharArray();
      	        tv_CompassDir.setText(Compass,0,Compass.length);
      	        
