@@ -167,6 +167,12 @@ public class DDS_Publisher extends Activity {
          }
 	    System.out.println("DATAWRITER CREATED ----------------");
 	    	     //Write the message to the DDS
+
+	    
+	    
+	    
+	    
+	    
 	    while ( true ) {
 	    	System.out.println("initialize data...\n");
 	 	    dataDDS dataMessage = new dataDDS();

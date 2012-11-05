@@ -1,8 +1,20 @@
 package com.example.dds_subscriber;
 
+
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.MulticastLock;
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.view.Menu;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import com.toc.coredx.DDS.DDS;
 import com.toc.coredx.DDS.DataReader;
 import com.toc.coredx.DDS.DataReaderListener;
@@ -28,24 +40,92 @@ import com.toc.coredx.DDS.SubscriptionMatchedStatus;
 import com.toc.coredx.DDS.Topic;
 import com.toc.coredx.DDS.TopicDescription;
 import com.toc.coredx.DDS.coredx;
+
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.Vector;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.os.MemoryFile;
+import android.provider.MediaStore;
+
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.VideoView;
+
+
+
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
 import android.view.Menu;
 
-//Import DDS data constructors
-import com.example.dds_subscriber.dataDDS;
-import com.example.dds_subscriber.dataDDSDataReader;
-import com.example.dds_subscriber.dataDDSDataWriter;
-import com.example.dds_subscriber.dataDDSSeq;
-import com.example.dds_subscriber.dataDDSTypeSupport;
+import com.toc.coredx.*;
+import com.toc.coredx.DDS.DDS;
+import com.toc.coredx.DDS.DataWriterListener;
+import com.toc.coredx.DDS.DataWriterQos;
+import com.toc.coredx.DDS.DomainParticipant;
+import com.toc.coredx.DDS.DomainParticipantFactory;
+import com.toc.coredx.DDS.DomainParticipantQos;
+import com.toc.coredx.DDS.DynamicTypeDataWriter;
+import com.toc.coredx.DDS.Publisher;
+import com.toc.coredx.DDS.PublisherListener;
+import com.toc.coredx.DDS.PublisherQos;
+import com.toc.coredx.DDS.ReturnCode_t;
+import com.toc.coredx.DDS.StructDynamicType;
+import com.toc.coredx.DDS.Topic;
 
-public class DDS_Subscriber extends Activity {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.Vector;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.MemoryFile;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.VideoView;
+
+
+public class DDS_Subscriber extends Fragment {
 
 	public static DynamicTypeDataReader[] string_dr = null;
 	public static DynamicTypeDataReader[]  readers_tablet      = { null, null, null };
@@ -210,7 +290,7 @@ public class DDS_Subscriber extends Activity {
 
      System.out.println("STARTING -------------------------");
      DomainParticipantFactory dpf = DomainParticipantFactory.get_instance();
-     dpf.set_license(license);
+    // dpf.set_license(license);
 	 dpf.get_default_participant_qos(dp_qos_tablet);
      DomainParticipant dp = null;
 
@@ -225,12 +305,12 @@ public class DDS_Subscriber extends Activity {
      {
      	//failed to create DomainParticipant -- bad license
      	android.util.Log.e("CoreDX DDS", "Unable to create Tablet DomainParticipant.");
-     	new AlertDialog.Builder(this)
-   	  .setTitle("CoreDX DDS Shapes Error")
-   	  .setMessage("Unable to create Tablet DomainParticipant.\n(Bad License?)")
-   	  .setNeutralButton("Close", new DialogInterface.OnClickListener() {
-   	      public void onClick(DialogInterface dlg, int s) { /* do nothing */ } })
-   	  .show();
+   //  	new AlertDialog.Builder(this)
+   	//  .setTitle("CoreDX DDS Shapes Error")
+   	//  .setMessage("Unable to create Tablet DomainParticipant.\n(Bad License?)")
+   	//  .setNeutralButton("Close", new DialogInterface.OnClickListener() {
+//   	      public void onClick(DialogInterface dlg, int s) { /* do nothing */ } })
+ //  	  .show();
      }
      
     SubscriberQos sub_qos_tablet = new SubscriberQos();
@@ -291,22 +371,26 @@ public class DDS_Subscriber extends Activity {
      while ( true ) {
     	 
        try {
-  	     Thread.currentThread().sleep(1000);   // 5 second sleep
+  
+  	Thread.currentThread().sleep(1000);   // 5 second sleep
        } catch (Exception e) {
   	e.printStackTrace();
        }
      
            
-        super.onCreate(savedInstanceState); 
-        setContentView(R.layout.activity_dds__subscriber);
+   //     super.onCreate(savedInstanceState); 
+       // setContentView(R.layout.activity_dds__subscriber);
+   //  }
+    //  }
+
+
+ //   @Override
+ //   public boolean onCreateOptionsMenu(Menu menu) {
+      //  getMenuInflater().inflate(R.menu.activity_dds__subscriber, menu);
+ //       return true;
+ //   }
+     
      }
-      }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_dds__subscriber, menu);
-        return true;
     }
-};
+}
         

@@ -1,0 +1,11 @@
+#====================================================================== 
+# CoreDX Evaluation License file 
+#  
+# Created:  Sep  15, 2012  Twin Oaks Computing, Inc. 
+# Contains: 30 day evaluation development licenses, evaluation run-time licenses 
+#  
+#====================================================================== 
+
+# EVALUATION key:
+LICENSE PRODUCT=coredx_c EXP=2013_01_16 CUSTOMER=simon.engler@gmail.com SIG=48b189a12c6e89087713f341f3cb8e548dcfd3342bc49d4fcbe8d24fd992e8a6ebd10eca0f44d648246ff0e67e94eaf9fd91f30985883f0abfaa19fd9ae9d046dc64d2501f3ed2472d8a739773277fa065fc7e4bfa8a1709a20966c949cdbada301f5f0aed7e631eabea31256bb24a957e238d37fa143707141b6888b286aca3
+LICENSE PRODUCT=coredx_ddl EXP=2013_01_16 CUSTOMER=simon.engler@gmail.com SIG=2609da54bf9d33c76e9a2824512f64f3fd2c60d3af2c238682f4d8ddd870a21b5b0d1fb4175731305d84d2f91aff313d4972ecad86425203990609718bdf867c353775f357e261aabcbab4a552c8f0d449ca92e726a191a40497c39973c8f8d67e18f73ea7742979bf5eb52390a4952bd73aeb2a4c3fab653a8f7d0d5de31610

@@ -219,7 +219,7 @@ public class BasicFragmentActivity extends FragmentActivity {
         Log.i("Tablet", "...License seems to be good");
         
         //Initialize Variables
-       XVel = 1;
+        XVel = 1;
   	    YVel = 2;
   	    CompassDir = 3;
   	    GPS_LN = 4;
