@@ -1,11 +1,17 @@
 package com.example.zoetablet;
 
 
+import java.io.File;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 public class BasicFragment extends Fragment {
 
@@ -18,7 +24,11 @@ public class BasicFragment extends Fragment {
         // view to the parent. This should always be false or an exception will be thrown. Android will add
         // the view to the parent when necessary.
         View view = inflater.inflate(R.layout.fragment_basic, container, false);
-        
+        String fileName = "/storage/sdcard0/DCIM/Camera/robot.jpg";
+           Bitmap myBitmap = BitmapFactory.decodeFile(fileName);
+          ImageView jpgView = (ImageView)view.findViewById(R.id.demoImageView);
+          jpgView.setImageBitmap(myBitmap);
+          
         // This is how you access your layout views. Notice how we call the findViewById() method
         // on our View directly. There is no method called findViewById() defined on Fragments like
         // there is in an Activity.

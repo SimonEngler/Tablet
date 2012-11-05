@@ -4,13 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/borders" >
-     
-    <com.example.zoetablet.ShapesViewFragment
-       android:layout_centerHorizontal="true" 
-       android:id="@+id/ShapesViewFragment" 
-       android:layout_width="240dip" 
-       android:layout_height="270dip"
-       android:layout_gravity="center_horizontal"/>
 
-</FrameLayout>      
- 
+    <ImageView
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:id="@+id/demoImageView"    
+	        android:scaleType="fitCenter"/>
+
+</FrameLayout>
