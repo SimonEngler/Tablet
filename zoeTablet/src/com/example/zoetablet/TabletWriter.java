@@ -3,7 +3,7 @@ package com.example.zoetablet;
 
 import com.example.zoetablet.BasicFragmentActivity;
 import com.toc.coredx.DDS.*;
-
+import java.lang.String;
 import java.util.Random;
 
 public class TabletWriter {
@@ -14,11 +14,13 @@ public class TabletWriter {
 		  public double CompassDir_DDS;
 		  public double GPS_LN_DDS;
 		  public double GPS_LT_DDS;
+		  public String Log_DDS;
+		  public byte[] data_image_DDS;
 		  public DynamicTypeDataWriter dw_DDS;
 		  Random generator = new Random();
 
 		  public TabletWriter(DynamicTypeDataWriter dw_DDS,double XVel_DDS,double YVel_DDS,double CompassDir_DDS,
-				  double GPS_LN_DDS, double GPS_LT_DDS) {
+				  double GPS_LN_DDS, double GPS_LT_DDS, String Log_DDS, byte[] data_image_DDS) {
 			  
 		    this.dw_DDS    = dw_DDS;
 		    this.XVel_DDS = XVel_DDS;
@@ -26,6 +28,8 @@ public class TabletWriter {
 		    this.CompassDir_DDS = CompassDir_DDS;
 		    this.GPS_LN_DDS = GPS_LN_DDS;
 		    this.GPS_LT_DDS = GPS_LT_DDS;
+		    this.Log_DDS = Log_DDS;
+		    this.data_image_DDS = data_image_DDS;
 		   
 		  }
 		  

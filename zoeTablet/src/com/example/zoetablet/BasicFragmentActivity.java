@@ -33,6 +33,8 @@ import com.toc.coredx.DDS.coredxConstants;
 
 //Import Android library
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -44,6 +46,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -58,14 +61,17 @@ import android.net.wifi.WifiManager;
 
 //Java Imports
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Enumeration;
 import java.net.NetworkInterface;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Random;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
@@ -88,7 +94,11 @@ public class BasicFragmentActivity extends FragmentActivity {
  	dataDDSSeq samples;
     dataDDSTypeSupport dataTypeSup;
     ReturnCode_t returnValue;
-		
+    public byte[] buffer;
+    public float compassV0;
+    public float compassV1;
+    public float compassV2;
+    
 	//Joystick variables
 	TextView txtX1, txtY1;
 	TextView txtX2, txtY2;
@@ -153,8 +163,11 @@ public class BasicFragmentActivity extends FragmentActivity {
 	  public static float CompassDir;
 	  public static float GPS_LN;
 	  public static float GPS_LT;
+	  public static String Log_DDS;
+	  public static byte[] data_image_DDS;
 	  DatalogFragment datalog; 
 	  Random generator = new Random();
+	  BasicFragment pictureData;
 	  
 	  //View variables Tablet
 	  public static TextView tv_datalogFragment = null;
@@ -164,6 +177,9 @@ public class BasicFragmentActivity extends FragmentActivity {
 	  public static TextView tv_GPS_LT = null;
 	  public static TextView tv_GPS_LN = null;
 	  public static TextView tv_GPSLocation = null;
+	  public static TextView tv_Log_DDS = null;
+	  public static TextView tv_data_image_DDS = null;
+	  public static TextView tv_Log_enter = null;
 	  //Set the decimal format
       DecimalFormat twoDForm = new DecimalFormat("#.##");
       TabletWriter tabletVariables = null;
@@ -210,12 +226,22 @@ public class BasicFragmentActivity extends FragmentActivity {
         Log.i("Tablet", "...License seems to be good");
         
         //Initialize Variables
-       XVel = 1;
+        XVel = 1;
   	    YVel = 2;
   	    CompassDir = 3;
   	    GPS_LN = 4;
   	    GPS_LT = 5;
-  	       
+  	    Log_DDS = DateFormat.getDateTimeInstance().format(new Date());
+  	    
+  	    //For the Image, use current image display and 
+  	    String fileName = "/storage/sdcard0/DCIM/Camera/robot.jpg";
+	    Bitmap bmp; 
+	    bmp = BitmapFactory.decodeFile(fileName);
+	    ByteArrayOutputStream baos=new ByteArrayOutputStream();
+	    bmp.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+	    buffer = baos.toByteArray();
+  	    data_image_DDS = buffer;  
+  	    
   		 Log.i("Tablet", "Creating Subscriber");
   	     class TestDataReaderListener implements DataReaderListener 
   	     {
@@ -312,13 +338,16 @@ public class BasicFragmentActivity extends FragmentActivity {
   	 		    System.out.println(" CompassDir: " + samples.value[i].CompassDir_DDS);
   	 		    System.out.println("     GPS_LT: " + samples.value[i].GPS_LT_DDS);
   	 		    System.out.println("     GPS_LN: " + samples.value[i].GPS_LN_DDS);
-  	 		    
+  	 		    System.out.println("     Log_DDS: " + samples.value[i].Log_DDS);
+  	 	
   	 		    //Capture data values for display
   	 		    BasicFragmentActivity.XVel =  samples.value[i].XVel_DDS;
   	 		    BasicFragmentActivity.YVel =  samples.value[i].YVel_DDS;
   	 		    BasicFragmentActivity.CompassDir =  samples.value[i].CompassDir_DDS;
   	 		    BasicFragmentActivity.GPS_LT =  samples.value[i].GPS_LT_DDS;
   	 		    BasicFragmentActivity.GPS_LN =  samples.value[i].GPS_LN_DDS;
+  	 		    BasicFragmentActivity.Log_DDS = samples.value[i].Log_DDS;
+  	 		    BasicFragmentActivity.data_image_DDS = samples.value[i].data_image_DDS;
   	 		  }
   	 	      }
   	 	    data_message.return_loan(samples, si);
@@ -412,20 +441,7 @@ public class BasicFragmentActivity extends FragmentActivity {
          //return;
         }
        
-  	    
-  //     while ( true ) {
-      	 
-  //       try {
-  //  
-  //  	Thread.currentThread().sleep(1000);   // 5 second sleep
-   //      } catch (Exception e) {
-   // 	e.printStackTrace();
-    //     }
-    //   }
-    
-  	            
-        
- 
+             
         // We default to building our Fragment at runtime, but you can switch the layout here
         // to R.layout.activity_fragment_xml in order to have the Fragment added during the
         // Activity's layout inflation.
@@ -444,15 +460,8 @@ public class BasicFragmentActivity extends FragmentActivity {
         // null, otherwise it will be.
        if (fragment == null) {
             
-            // We alter the state of Fragments in the FragmentManager using a FragmentTransaction. 
-            // FragmentTransaction's have access to a Fragment back stack that is very similar to the Activity
-            // back stack in your app's task. If you add a FragmentTransaction to the back stack, a user 
-            // can use the back button to undo a transaction. We will cover that topic in more depth in
-            // the second part of the tutorial.
-        	
-            
-    	    
-        	//Shapes Fragment
+        
+        	//Image View Fragment
             Log.i("Debug", "...calling fragment center pane");
             FragmentTransaction ft = fm.beginTransaction();
             ft.add(R.id.center_pane_top, new BasicFragment());
@@ -549,8 +558,8 @@ public class BasicFragmentActivity extends FragmentActivity {
       //Compass Activities
         compassView = (CompassView)this.findViewById(R.id.compassView);
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-  	    //updateOrientation(new float[] {0, 0, 0});
-        //updateOrientation(calculateOrientation());
+  	  //  updateOrientation(new float[] {0, 0, 0});
+      //  updateOrientation(calculateOrientation());
   	    
 
       
@@ -583,6 +592,12 @@ public class BasicFragmentActivity extends FragmentActivity {
      if (tv_GPSLocation != null)
          tv_GPSLocation.setText("<detecting>");
    
+      tv_Log_DDS = (TextView) findViewById(R.id.loggingMessage);
+    		 if(tv_Log_DDS != null)
+    			 tv_Log_DDS.setText("<detecting>");
+      
+ 
+    		 
      mHandler.postDelayed(mUpdateDatalog, 500); // every 1 sec */
      
      
@@ -619,8 +634,23 @@ public class BasicFragmentActivity extends FragmentActivity {
         values[0] = (float) Math.toDegrees(values[0]);
         values[1] = (float) Math.toDegrees(values[1]);
         values[2] = (float) Math.toDegrees(values[2]);
-
-        return values;
+        
+       // System.out.println("Compass " + values[0] + " " + values[1] + " " + values[2]);
+        if(values[0] != 0.0 && values[1] != 0.0)
+        {
+        	compassV0 = values[0];
+        	compassV1 = values[1];
+        	compassV2 = values[2];
+        }
+        
+        if(values[0] == 0.0 && values[1] == 0.0)
+        {
+        	//If data is spitting out zeros, keep last good value
+        	values[0] =compassV0 ;
+        	values[1] =compassV1;
+        	values[2] =compassV2;
+        }
+        return values; 
       }
       
       //Compass Function
@@ -632,8 +662,8 @@ public class BasicFragmentActivity extends FragmentActivity {
           if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
             mValues = event.values;
        
-
-       //   updateOrientation(calculateOrientation());
+         // updateOrientation(new float[] {0, 0, 0});
+          updateOrientation(calculateOrientation());
           
          
         }
@@ -652,10 +682,11 @@ public class BasicFragmentActivity extends FragmentActivity {
      	  Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
      	  Sensor magField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
      	  sensorManager.registerListener(sensorEventListener, 
-     	                                 accelerometer,SensorManager.SENSOR_DELAY_FASTEST);
+     	                                 accelerometer,SensorManager.SENSOR_DELAY_UI);
      	  sensorManager.registerListener(sensorEventListener, 
      	                                 magField,
-     	                                 SensorManager.SENSOR_DELAY_FASTEST);   
+     	                                 SensorManager.SENSOR_DELAY_UI);   
+     	
            super.onResume();
      	}
 
@@ -753,10 +784,7 @@ public class BasicFragmentActivity extends FragmentActivity {
      	  }
 
      	  
-     	
-//     	 public static void newTabletWriter(double XVel,double YVel,double CompassDir,
-//				  double GPS_LN, double GPS_LT)
-    
+ 
      	  public  void newTabletWriter()
      	 {
      	     //BasicFragmentActivity Variables = null;	 
@@ -765,11 +793,9 @@ public class BasicFragmentActivity extends FragmentActivity {
     		if (writers_tablet.equals(topic_names_tablet[i]))
     		  {
     		    TabletWriter wTablet = new TabletWriter (writers_tablet[i],XVel,YVel,CompassDir,
-  					  GPS_LN, GPS_LT);
+  					  GPS_LN, GPS_LT,Log_DDS, data_image_DDS);
     			
-    		    // TabletWriter wTablet = new TabletWriter (writers_tablet[i],XVel,YVel,CompassDir,
-    			//		  GPS_LN, GPS_LT);
-    					  
+    		   		  
     		    		
     		    synchronized (tablet) { tablet.add(wTablet); }
     		    break;
@@ -864,11 +890,27 @@ public class BasicFragmentActivity extends FragmentActivity {
      	        char[] Yvelocity = null;
      	        char[] GPS = null;
      	        char[] Compass = null;
+     	        char[] Log_DDS = null;
+     	        char[] Log_enter = null;
      	        String oldInfo = null;
-     	        double hello;
+     	        
  
           	    Log.i("Tablet", "...passed update function");
      	  
+          	    //Log DDS	    
+      	        oldInfo = BasicFragmentActivity.Log_DDS + "\n";
+     	        Log_DDS = oldInfo.toCharArray();
+     	        tv_Log_DDS.setText(Log_DDS, 0, Log_DDS.length);
+     	       
+     	        //Return
+     	       // oldInfo = "\n";
+     	       // Log_enter = oldInfo.toCharArray();
+     	      //  tv_Log_enter.setText(Log_enter,0,Log_enter.length);
+     	        
+     	        //X velocity	    
+      	        oldInfo = String.valueOf(BasicFragmentActivity.XVel);
+     	        Xvelocity = oldInfo.toCharArray();
+     	        tv_XVel.setText(Xvelocity,0,Xvelocity.length); 
      	        //X velocity	    
       	        oldInfo = String.valueOf(BasicFragmentActivity.XVel);
      	        Xvelocity = oldInfo.toCharArray();
@@ -880,7 +922,6 @@ public class BasicFragmentActivity extends FragmentActivity {
     	        tv_YVel.setText(Yvelocity,0,Yvelocity.length); 
      	        
      	        //GPS Location
-    	        
     	        oldInfo = getDatalogValues(BasicFragmentActivity.GPS_LN) + "  W  " + getDatalogValues(BasicFragmentActivity.GPS_LT) + "  N";
      	        GPS = oldInfo.toCharArray();
      	        tv_GPSLocation.setText(GPS,0,GPS.length);
