@@ -168,9 +168,7 @@ public class DDS_Publisher extends Activity {
 	    System.out.println("DATAWRITER CREATED ----------------");
 	    	     //Write the message to the DDS
 
-	    
-	    
-	    
+	   
 	    
 	    
 	    while ( true ) {
@@ -192,7 +190,7 @@ public class DDS_Publisher extends Activity {
 			}
 		    System.out.println( "DDS_DataWriter_write() " + returnValue);
 	      try {
-		       Thread.currentThread().sleep(5000);   // 5 second sleep
+		       Thread.currentThread().sleep(1000);   // 5 second sleep
 	      } catch (Exception e) {
 		e.printStackTrace();
 	      }
