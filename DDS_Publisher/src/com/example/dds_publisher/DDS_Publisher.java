@@ -7,9 +7,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.Menu;
 import android.util.Log;
 import java.io.*;
+import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
 import com.toc.coredx.DDS.DDS;
@@ -27,13 +30,15 @@ import com.toc.coredx.DDS.StructDynamicType;
 import com.toc.coredx.DDS.Topic;
 import com.example.dds_publisher.Writer;
 
-//Import DDS data constructors
-import com.example.dds_publisher.dataDDS;
-import com.example.dds_publisher.dataDDSDataReader;
-import com.example.dds_publisher.dataDDSDataWriter;
-import com.example.dds_publisher.dataDDSSeq;
-import com.example.dds_publisher.dataDDSTypeSupport;
+//DDS Tablet Data Imports
+import com.example.ddspackage.dataDDS;
+import com.example.ddspackage.dataDDSDataReader;
+import com.example.ddspackage.dataDDSSeq;
+import com.example.ddspackage.dataDDSTypeSupport;
+import com.example.ddspackage.dataDDSDataWriter;
+
 import java.util.Random;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
@@ -59,6 +64,7 @@ public class DDS_Publisher extends Activity {
 	ReturnCode_t returnValue;
 	Random generator = new Random();
     DecimalFormat twoDForm = new DecimalFormat("#.##");
+    byte[] buffer = null;
     
     
     @Override
@@ -166,19 +172,31 @@ public class DDS_Publisher extends Activity {
           return;
          }
 	    System.out.println("DATAWRITER CREATED ----------------");
-	    	     //Write the message to the DDS
-
+	    
+	    //Write the message to the DDS
 	   
+	    
+	    //For the Image, use current image display and 
+  	    String fileName = "/storage/sdcard0/DCIM/Camera/robot.jpg";
+	    Bitmap bmp; 
+	    bmp = BitmapFactory.decodeFile(fileName);
+	    ByteArrayOutputStream baos=new ByteArrayOutputStream();
+	    bmp.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+	    buffer = baos.toByteArray();
+  	 //   dataMessage.data_image_DDS = buffer;  
 	    
 	    
 	    while ( true ) {
 	    	System.out.println("initialize data...\n");
-	 	    dataDDS dataMessage = new dataDDS();
+	    	 dataDDS dataMessage = new dataDDS();
 	 		dataMessage.XVel_DDS = getDatalogValues(666);
 	 		dataMessage.YVel_DDS = getDatalogValues(666);
 	 		dataMessage.CompassDir_DDS = getDatalogValues(124);
 	 		dataMessage.GPS_LN_DDS = getDatalogValues(12);
 	 		dataMessage.GPS_LT_DDS = getDatalogValues(13);
+	 		dataMessage.data_image_DDS = buffer;
+	 		dataMessage.Log_DDS = DateFormat.getDateTimeInstance().format(new Date());
+	 	
 	 		System.out.println("data ready...\n");
 	    	
             returnValue = dw.write(dataMessage, null);
@@ -186,7 +204,7 @@ public class DDS_Publisher extends Activity {
 		    if(returnValue != ReturnCode_t.RETCODE_OK )
 		    {
 		      System.out.println("ERROR writing sample\n");
-			  return;
+			 // return;
 			}
 		    System.out.println( "DDS_DataWriter_write() " + returnValue);
 	      try {

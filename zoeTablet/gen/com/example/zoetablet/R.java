@@ -65,17 +65,18 @@ public final class R {
         public static final int ic_action_search=0x7f020023;
         public static final int ic_launcher=0x7f020024;
         public static final int icon=0x7f020025;
-        public static final int rb_black=0x7f020026;
-        public static final int rb_blue=0x7f020027;
-        public static final int rb_circle=0x7f020028;
-        public static final int rb_cyan=0x7f020029;
-        public static final int rb_green=0x7f02002a;
-        public static final int rb_magenta=0x7f02002b;
-        public static final int rb_orange=0x7f02002c;
-        public static final int rb_red=0x7f02002d;
-        public static final int rb_square=0x7f02002e;
-        public static final int rb_triangle=0x7f02002f;
-        public static final int rb_yellow=0x7f020030;
+        public static final int no_video=0x7f020026;
+        public static final int rb_black=0x7f020027;
+        public static final int rb_blue=0x7f020028;
+        public static final int rb_circle=0x7f020029;
+        public static final int rb_cyan=0x7f02002a;
+        public static final int rb_green=0x7f02002b;
+        public static final int rb_magenta=0x7f02002c;
+        public static final int rb_orange=0x7f02002d;
+        public static final int rb_red=0x7f02002e;
+        public static final int rb_square=0x7f02002f;
+        public static final int rb_triangle=0x7f020030;
+        public static final int rb_yellow=0x7f020031;
     }
     public static final class id {
         public static final int CompassDir=0x7f090029;

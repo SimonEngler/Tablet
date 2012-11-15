@@ -28,7 +28,6 @@ import com.toc.coredx.DDS.SubscriberQos;
 import com.toc.coredx.DDS.SubscriptionMatchedStatus;
 import com.toc.coredx.DDS.Topic;
 import com.toc.coredx.DDS.TopicDescription;
-import com.toc.coredx.DDS.coredx;
 import com.toc.coredx.DDS.coredxConstants;
 
 //Import Android library
@@ -46,7 +45,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -180,6 +178,7 @@ public class BasicFragmentActivity extends FragmentActivity {
 	  public static TextView tv_Log_DDS = null;
 	  public static TextView tv_data_image_DDS = null;
 	  public static TextView tv_Log_enter = null;
+
 	  //Set the decimal format
       DecimalFormat twoDForm = new DecimalFormat("#.##");
       TabletWriter tabletVariables = null;
@@ -234,7 +233,7 @@ public class BasicFragmentActivity extends FragmentActivity {
   	    Log_DDS = DateFormat.getDateTimeInstance().format(new Date());
   	    
   	    //For the Image, use current image display and 
-  	    String fileName = "/storage/sdcard0/DCIM/Camera/robot.jpg";
+  	    String fileName = "/storage/sdcard0/DCIM/no_video.jpg";
 	    Bitmap bmp; 
 	    bmp = BitmapFactory.decodeFile(fileName);
 	    ByteArrayOutputStream baos=new ByteArrayOutputStream();
@@ -276,7 +275,7 @@ public class BasicFragmentActivity extends FragmentActivity {
   	  					LivelinessChangedStatus status)
   	       {
   	      	TopicDescription   td = dr.get_topicdescription();
-  	    	System.out.println(" @@@@@@@@@@@     LIVELINESS CHANGED      @@@@@@@@@@"); 
+  	    	System.out.println(" @@@@@@@@@@@     LIVELINESS CHANGED  " +  td.get_name() +  " @@@@@@@@@@"); 
   	       }
 
   	       @Override
@@ -378,12 +377,6 @@ public class BasicFragmentActivity extends FragmentActivity {
        {
        	//failed to create DomainParticipant -- bad license
        	android.util.Log.e("CoreDX DDS", "Unable to create Tablet DomainParticipant.");
-     //  	new AlertDialog.Builder(this)
-     	//  .setTitle("CoreDX DDS Shapes Error")
-     	//  .setMessage("Unable to create Tablet DomainParticipant.\n(Bad License?)")
-     	//  .setNeutralButton("Close", new DialogInterface.OnClickListener() {
-//     	      public void onClick(DialogInterface dlg, int s) { /* do nothing */ } })
-   //  	  .show();
        }
        
       SubscriberQos sub_qos_tablet = new SubscriberQos();
@@ -401,7 +394,8 @@ public class BasicFragmentActivity extends FragmentActivity {
    	 }
    	        	  
        System.out.println("CREATE TOPIC ---------------------"); 
-  	  /* create a DDS Topic with the FilterMsg data type. */
+  	 
+    /* create a DDS Topic with the FilterMsg data type. */
   	Topic topics= dp.create_topic("dataDDS",ts.get_type_name(), 
      		DDS.TOPIC_QOS_DEFAULT,
      		null,
@@ -426,7 +420,8 @@ public class BasicFragmentActivity extends FragmentActivity {
        DataReaderListener dr_listener = new TestDataReaderListener();
        
        System.out.println("CREATE DATAREADER ----------------");
-       //Create DDS Data reader
+       
+     //Create DDS Data reader
   	 dataDDSDataReader dr= (dataDDSDataReader) sub.create_datareader(topics, 
                DDS.DATAREADER_QOS_DEFAULT,
                dr_listener, 
@@ -467,7 +462,6 @@ public class BasicFragmentActivity extends FragmentActivity {
             ft.add(R.id.center_pane_top, new BasicFragment());
             ft.addToBackStack(null);
 
-     
             //Logging Fragment
             Log.i("Debug", "...calling fragment left pane top");
             //ft.add(R.id.left_pane_top, new LoggingFragment());
@@ -503,7 +497,7 @@ public class BasicFragmentActivity extends FragmentActivity {
             ft.commit();                 
         }
        
-     //Joystick variables
+        //Joystick variables
    	   txtX1 = (TextView)this.findViewById(R.id.TextViewX1);
        txtY1 = (TextView)this.findViewById(R.id.TextViewY1);
    	   txtX2 = (TextView)this.findViewById(R.id.TextViewX2);
@@ -596,17 +590,11 @@ public class BasicFragmentActivity extends FragmentActivity {
     		 if(tv_Log_DDS != null)
     			 tv_Log_DDS.setText("<detecting>");
       
- 
-    		 
      mHandler.postDelayed(mUpdateDatalog, 500); // every 1 sec */
-     
-     
-     
     }
     
 
     //Compass function
-   
     private void updateOrientation(float[] values) {
         if (compassView!= null) {
             compassView.setBearing(values[0]);
@@ -891,7 +879,6 @@ public class BasicFragmentActivity extends FragmentActivity {
      	        char[] GPS = null;
      	        char[] Compass = null;
      	        char[] Log_DDS = null;
-     	        char[] Log_enter = null;
      	        String oldInfo = null;
      	        
  
@@ -901,11 +888,6 @@ public class BasicFragmentActivity extends FragmentActivity {
       	        oldInfo = BasicFragmentActivity.Log_DDS + "\n";
      	        Log_DDS = oldInfo.toCharArray();
      	        tv_Log_DDS.setText(Log_DDS, 0, Log_DDS.length);
-     	       
-     	        //Return
-     	       // oldInfo = "\n";
-     	       // Log_enter = oldInfo.toCharArray();
-     	      //  tv_Log_enter.setText(Log_enter,0,Log_enter.length);
      	        
      	        //X velocity	    
       	        oldInfo = String.valueOf(BasicFragmentActivity.XVel);

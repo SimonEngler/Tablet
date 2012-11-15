@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
+import android.util.FloatMath;
 
 public class JoystickView extends View {
 	public static final int INVALID_POINTER_ID = -1;
@@ -314,7 +315,7 @@ public class JoystickView extends View {
 	private void constrainCircle() {
 		float diffX = touchX;
 		float diffY = touchY;
-		double radial = Math.sqrt((diffX*diffX) + (diffY*diffY));
+		double radial = FloatMath.sqrt((diffX*diffX) + (diffY*diffY));
 		if ( radial > movementRadius ) {
 			touchX = (int)((diffX / radial) * movementRadius);
 			touchY = (int)((diffY / radial) * movementRadius);
@@ -435,7 +436,7 @@ public class JoystickView extends View {
 		cartX = (int)(touchX / movementRadius * movementRange);
 		cartY = (int)(touchY / movementRadius * movementRange);
 		
-		radial = Math.sqrt((cartX*cartX) + (cartY*cartY));
+		radial = FloatMath.sqrt((cartX*cartX) + (cartY*cartY));
 		angle = Math.atan2(cartY, cartX);
 		
 		//Invert Y axis if requested
