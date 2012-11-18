@@ -1,4 +1,0 @@
-Tablet
-======
-
-Zoe Tablet interface
