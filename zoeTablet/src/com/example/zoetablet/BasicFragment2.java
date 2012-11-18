@@ -1,3 +1,26 @@
+//Zoe Android Robot Interface (ZARI)
+//
+//Copyright (C) 2012 Carnegie Mellon University (CMU)
+//All Rights Reserved.
+//
+//Permission to use, copy, modify and distribute this software and its
+//documentation is hereby granted, provided that both the copyright notice and
+//this permission notice appear in all copies of the software, derivative works
+//or modified versions, and any portions thereof, and that both notices appear
+//in supporting documentation.
+//
+//Carnegie Mellon University ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS" CONDITION.
+//Carnegie Mellon University DISCLAIMS ANY LIABILITY OF ANY KIND FOR ANY DAMAGES
+//WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+
+//Any question, please contact the author:
+//	Simon Engler
+//	Sensor Networks Laboratory
+//	Department of Electrical and Computer Engineering
+//	University of Calgary
+//	email: stengler@ucalgary.ca
+//	       simon.engler@gmail.com
+
 package com.example.zoetablet;
 
 import com.example.zoetablet.R;
@@ -13,34 +36,8 @@ public class BasicFragment2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         
-        // onCreateView() is a lifecycle event that is unique to a Fragment. This is called when Android
-        // needs the layout for this Fragment. The call to LayoutInflater::inflate() simply takes the layout
-        // ID for the layout file, the parent view that will hold the layout, and an option to add the inflated
-        // view to the parent. This should always be false or an exception will be thrown. Android will add
-        // the view to the parent when necessary.
-        
-        
   	    View view = inflater.inflate(R.layout.fragment_basic2, container, false);
-  	    
-  	    // This is how you access your layout views. Notice how we call the findViewById() method
-        // on our View directly. There is no method called findViewById() defined on Fragments like
-        // there is in an Activity.
-        //  Button button = (Button) view.findViewById(R.id.fragment_button_2);
-        
-        // A simple OnClickListener for our button. You can see here how a Fragment can encapsulate
-        // logic and views to build out re-usable Activity components.
-        //  button.setOnClickListener(new OnClickListener() {
-            
-        //    public void onClick(View v) {
-        //        Activity activity = getActivity();
-                
-        //        if (activity != null) {
-        //            Toast.makeText(activity, R.string.toast_you_just_clicked_a_fragment_2, Toast.LENGTH_LONG).show();
-        //        }
-        //    }
-            
-       // });
-   
+  	   
        return view;
     }
     
